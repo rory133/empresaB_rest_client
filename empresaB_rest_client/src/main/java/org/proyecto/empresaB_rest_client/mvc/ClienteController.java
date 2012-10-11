@@ -1,6 +1,7 @@
 package org.proyecto.empresaB_rest_client.mvc;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,9 +11,10 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
+import org.springframework.web.client.RestTemplate;
 import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.model.Cliente_B;
+import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
 import org.proyecto.empresaB_rest_client.service.impl.Cliente_BServiceImpl;
@@ -20,6 +22,11 @@ import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
 import org.proyecto.empresaB_rest_client.util.ListaProvincias;
 import org.proyecto.empresaB_rest_client.util.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -50,7 +57,7 @@ public class ClienteController {
 	@Autowired
 	private Mail mail;
 	
-
+	private RestTemplate restTemplate = new RestTemplate();
 
 	
 	protected static Logger logger = Logger.getLogger("*en Cliente_B_BController*");
@@ -112,7 +119,7 @@ public class ClienteController {
 	
 	
 	
-	
+	/*
 	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
 	public ModelAndView listadoClientes_B(){
 		List<Cliente_B> lista =cliente_BServiceImpl.findAll();
@@ -123,6 +130,38 @@ public class ClienteController {
 
 	   return new ModelAndView("cliente_b/listaClientes","clientes", lista);
 	}
+	*/
+	
+	
+	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
+	public ModelAndView listadoClientes_B(){
+		logger.info("en listadoClientes_B2 en client*");
+		
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
+		
+		// Send the request as GET
+		ModelAndView mav=new ModelAndView("cliente_b/listaClientes");
+		try {
+			ResponseEntity<ListaClientes_B> result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes", HttpMethod.GET, entity, ListaClientes_B.class);
+			logger.info("en listadoClien rult tamaño result: "+result.getBody().getDataCliente().size());	
+			mav.addObject("clientes", result.getBody().getDataCliente());
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
+
+		return mav;
+	}
+	
 	
 	
 	@RequestMapping(value="/cliente/edit",method=RequestMethod.GET)
