@@ -73,15 +73,22 @@ public class ClienteController {
 	  }
 	
 	
-	
+	//enviamos un nuevo cliente al servidor desde aplicacion cliente
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView addCliente_B_form(@Valid @ModelAttribute("cliente_b")Cliente_B cliente_b, BindingResult  result)throws Exception {
 
 		
-		logger.info("inicio de addCliente_B_form");
+		logger.info("inicio de addCliente_B_form en aplicacion cliente@@@@@@@");
+		
+		
+		//aaaaaPARA CAMBIAR MAS TARDE CON CONSULTA A SERVIDOR
 		if (null !=cliente_BServiceImpl.findByCliente_B_login_usuario_b(cliente_b.getLogin_usuario_b()))
 		result.addError(new ObjectError("loginInvalido", "Este usuario ya existe"));
+		
+		
+		
+		
 		//	result.addError(new ObjectError(result.getObjectName(), "este usuario ya existe!"));
 		if(result.hasErrors()) {
 		logger.info("addCliente_B_form ------tiene errores----"+result.toString());
@@ -91,25 +98,31 @@ public class ClienteController {
 
 		}
 	
-		logger.info("addCliente_B_form ");
-		cliente_b.setFecha_alta_b(new Date());
-		cliente_b.setAUTHORITY("ROLE_CLIENTE");
-		cliente_b.setENABLED(true);
-		logger.info("se ha sumado cliente "+cliente_b.getNombre_b());
-		cliente_BServiceImpl.save(cliente_b);
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(cliente_b,headers);
 
-		//return new ModelAndView("redirect:listado");
-		/*return new ModelAndView("home");*/
+		//enviamos el resquest como POST
 		
-		/*return new ModelAndView("producto_b/listaProductos");*/
+		try {
+			//ResponseEntity<Cliente_B> clienteDevuelto = 
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/cliente",
+							HttpMethod.POST, entity, Cliente_B.class);
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
 		
 		
-		String content="apreciado usuario gracias por darse de alta en nuestra página ahora pordrá realizar los pedidos que desee";
-		String subject="realizada correctamente alta en empresa_b";		
-		mail.sendMail(cliente_b.getLogin_usuario_b(), content, cliente_b.getEmail_b(), subject);
 		
-		
-		
+		//devolvemos pagina inicial
 		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
 		return new ModelAndView("producto_b/listaProductos","productos", lista);
 		
