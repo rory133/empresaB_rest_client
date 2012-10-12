@@ -82,7 +82,44 @@ public class ClienteController {
 		
 		
 		//aaaaaPARA CAMBIAR MAS TARDE CON CONSULTA A SERVIDOR
-		if (null !=cliente_BServiceImpl.findByCliente_B_login_usuario_b(cliente_b.getLogin_usuario_b()))
+		
+		//comprobamos que no exista este login
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes2 = new ArrayList<MediaType>();
+		acceptableMediaTypes2.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers2 = new HttpHeaders();
+		headers2.setAccept(acceptableMediaTypes2);
+		HttpEntity<Cliente_B> entity2 = new HttpEntity<Cliente_B>(headers2);
+
+		//enviamos el resquest como POST
+		ResponseEntity<Cliente_B> resultado=null;
+		
+		try {
+			
+			 resultado=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login}",
+							HttpMethod.GET, entity2, Cliente_B.class,cliente_b.getLogin_usuario_b());
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
+			
+		//buscamos un usuario por el login enviado
+		Usuario_B usuarioBuscado=resultado.getBody();
+		
+		
+		
+		
+		
+		
+		
+		
+		if (null !=usuarioBuscado)
+		//if (null !=cliente_BServiceImpl.findByCliente_B_login_usuario_b(cliente_b.getLogin_usuario_b()))
 		result.addError(new ObjectError("loginInvalido", "Este usuario ya existe"));
 		
 		
@@ -159,9 +196,10 @@ public class ClienteController {
 		headers.setAccept(acceptableMediaTypes);
 		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
 		
-		// Send the request as GET
+		// enviamos el request como GET
 		ModelAndView mav=new ModelAndView("cliente_b/listaClientes");
 		try {
+			//realizamos consulta a servidor para que nos envie todos los clientes
 			ResponseEntity<ListaClientes_B> result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes", HttpMethod.GET, entity, ListaClientes_B.class);
 			logger.info("en listadoClien rult tamaño result: "+result.getBody().getDataCliente().size());	
 			mav.addObject("clientes", result.getBody().getDataCliente());
