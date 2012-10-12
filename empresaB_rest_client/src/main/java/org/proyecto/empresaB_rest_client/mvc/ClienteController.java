@@ -238,7 +238,7 @@ public class ClienteController {
 				try {
 					
 					 result=
-					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteId/{id}",
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/cliente/{id}",
 									HttpMethod.GET, entity, Cliente_B.class,id);
 			
 					
@@ -371,7 +371,7 @@ public class ClienteController {
 			 result=
 			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login}",
 							HttpMethod.GET, entity,Cliente_B.class, login);
-			 logger.info(" result 	restTemplate.exchange(http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login} result.getBody().getLogin_usuario_b() :"+result.getBody().getLogin_usuario_b());
+			 logger.info(" result 	restTemplate.exchange(http://localhost:8080/empresaB_rest_server/clientes/cliente/{login} result.getBody().getLogin_usuario_b() :"+result.getBody().getLogin_usuario_b());
 			
 					
 			} catch (Exception e) {
