@@ -81,7 +81,7 @@ public class ClienteController {
 		logger.info("inicio de addCliente_B_form en aplicacion cliente@@@@@@@");
 		
 		
-		//aaaaaPARA CAMBIAR MAS TARDE CON CONSULTA A SERVIDOR
+		
 		
 		//comprobamos que no exista este login
 		// Preparamos acceptable media type
@@ -222,7 +222,7 @@ public class ClienteController {
 		
 		Cliente_B cliente_b= new Cliente_B();
 		
-		
+		//obtenemos el cliente correspondiente a ese id
 		// Preparamos acceptable media type
 				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
@@ -267,7 +267,7 @@ public class ClienteController {
 		headers.setAccept(acceptableMediaTypes);
 		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
 
-		//enviamos el resquest como POST
+		//enviamos el resquest como GET
 		ResponseEntity<Cliente_B> resultado=null;
 		
 		try {
@@ -353,7 +353,7 @@ public class ClienteController {
 		
 		logger.info(" en cliente /cliente/modificarMiCuenta_B/@@@@@@ con login: " + login);
 		
-		
+		//obtenemos el idusuario del login pasado
 		// Preparamos acceptable media type
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
@@ -386,6 +386,47 @@ public class ClienteController {
 	
 	@RequestMapping(value="/admin/borrar",method=RequestMethod.GET)
 	public ModelAndView delCliente_B_form(String id){
+		
+		logger.info("en borrar con ide con id @@@@@@ : "+id);		
+		
+		//obtenemos el cliente correspondiente a ese id		
+		
+		
+		
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers = new HttpHeaders();
+				headers.setAccept(acceptableMediaTypes);
+				HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
+
+				//enviamos el resquest como POST
+				
+				//ResponseEntity<Cliente_B> result=null;
+				
+				try {
+					
+					// result=
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/cliente/{id}",
+									HttpMethod.DELETE, entity, Cliente_B.class,id);
+							
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					} 
+				logger.info("Despues de borrar cliente borrar con ide con id @@@@@@ : ");	
+		return new ModelAndView("redirect:listado");
+
+}
+	
+	
+/*	
+	@RequestMapping(value="/admin/borrar",method=RequestMethod.GET)
+	public ModelAndView delCliente_B_form(String id){
 		logger.info(" en borrrar cliente ");
 		logger.info("en borrar con ide con id: "+id);
 		Cliente_B cliente_b= new Cliente_B();
@@ -398,6 +439,6 @@ public class ClienteController {
 		return new ModelAndView("redirect:listado");
 
 }
-	
+	*/
 
 }
