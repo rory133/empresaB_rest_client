@@ -73,8 +73,7 @@ public class ClienteController {
 	  }
 	
 	
-	//enviamos un nuevo cliente al servidor desde aplicacion cliente
-	
+	//enviamos un nuevo cliente al servidor desde aplicacion cliente	
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView addCliente_B_form(@Valid @ModelAttribute("cliente_b")Cliente_B cliente_b, BindingResult  result)throws Exception {
 
@@ -98,7 +97,7 @@ public class ClienteController {
 
 		}
 	
-		// Preparamos acceptable media type
+		// ----Preparamos acceptable media type----
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
 		
@@ -145,7 +144,7 @@ public class ClienteController {
 	}
 	*/
 	
-	
+	//---listamos todos los clientes----
 	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
 	public ModelAndView listadoClientes_B(){
 		logger.info("en listadoClientes_B2 en client*");
@@ -181,82 +180,130 @@ public class ClienteController {
 	public ModelAndView editCliente_B_form(String id){
 
 
-		logger.info("id cliente pasado a edit-modificar: "+id);
+		logger.info("id cliente pasado a edit-modificar en Cliente @@@@@@ : "+id);
+		
 		Cliente_B cliente_b= new Cliente_B();
-		cliente_b= cliente_BServiceImpl.findByCliente_BIdCliente_b(id);
+		
+		
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers = new HttpHeaders();
+				headers.setAccept(acceptableMediaTypes);
+				HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
+
+				//enviamos el resquest como POST
+				ResponseEntity<Cliente_B> result=null;
+				
+				try {
 					
-		logger.info("cliente pasado a edit-modificar: "+cliente_b.getNombre_b());
+					 result=
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteId/{id}",
+									HttpMethod.GET, entity, Cliente_B.class,id);
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					} 
+
 		
-		
-		//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		//return new ModelAndView("producto_b/listaProductos","productos", lista);
-		return new ModelAndView("cliente_b/modificar", "cliente_b",cliente_b);
+	//	return new ModelAndView("cliente_b/modificar", "cliente_b",result.getBody().getIdusuarios_b());
+				return new ModelAndView("cliente_b/modificar", "cliente_b",result.getBody());
 	
 }
 	@RequestMapping(value="/cliente/modificarCliente_B", method = RequestMethod.POST)
 	public ModelAndView modCliente_B_form(@Valid @ModelAttribute("cliente_b")Cliente_B cliente_b, BindingResult  result) throws Exception{
 
 		
-		logger.info("inicio de modCliente_B_form");
-		Usuario_B usuarioBuscado=cliente_BServiceImpl.findByCliente_B_login_usuario_b(cliente_b.getLogin_usuario_b());
+		logger.info("inicio de modCliente_B_form en cliente@@@@@@@");
+		//comprobamos que no exista este login
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
+
+		//enviamos el resquest como POST
+		ResponseEntity<Cliente_B> resultado=null;
+		
+		try {
+			
+			 resultado=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login}",
+							HttpMethod.GET, entity, Cliente_B.class,cliente_b.getLogin_usuario_b());
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
+			
+		//buscamos un usuario por el login enviado
+		Usuario_B usuarioBuscado=resultado.getBody();
+		
 		Integer idusuarioBuscado=null;
+		
 		if (null!=usuarioBuscado){
+			//ya existia ese login asignamos si id a idusuarioBuscado
 		idusuarioBuscado=usuarioBuscado.getIdusuarios_b();
 		}
+		//asignamos el id del usuario pasado a idcliente
 		Integer idcliente_b=cliente_b.getIdusuarios_b();
-
-				
-		logger.info("inicio de modCliente_B_form idusuarioBuscado "+idusuarioBuscado);
-		logger.info("inicio de modCliente_B_form idcliente_b "+idcliente_b);
-		
-		
-		logger.info("inicio de modCliente_B_form id usuarioBuscado "+usuarioBuscado.getIdusuarios_b());
-		logger.info("inicio de modCliente_B_form id cliente_B "+cliente_b.getIdusuarios_b());
+		//si los dos ids coinciden y no son nulos ha usado el login de otro usuario, añadimos un error con el aviso
 		if ((null !=usuarioBuscado)&& (idusuarioBuscado==idcliente_b)){
 			result.addError(new ObjectError("loginInvalido", "Este usuario ya existe"));
 			logger.info("null !=usuarioBuscado"+(null !=usuarioBuscado));
 			logger.info("((usuarioBuscado.getIdusuarios_b())!=(cliente_b.getIdusuarios_b()))"+((usuarioBuscado.getIdusuarios_b())!=(cliente_b.getIdusuarios_b())));
 			
 		}
+		//como hemos añadido el error se devuelve a la vista para volver a editarlo
 		if(result.hasErrors()) {
 		logger.info("modCliente_B_form ------tiene errores----"+result.toString());
 		logger.info("errores: "+result.toString());
 		 return new ModelAndView("cliente_b/edit", "cliente_b",new Cliente_B()).addAllObjects(result.getModel());
 
 		}
-	
-
-	/*		CODIGO DE CUANDO NO MOSTRABA Ñss
-		logger.info("modificarProducto_B_form ------NO tiene errores----");
-		logger.info("nombre producto a añadir "+ producto_b.getNombre_productoB());
-		//productos_BServiceImpl.save(producto_b);
-		logger.info("modificarProducto_B_form ");
-		String nombre =producto_b.getNombre_productoB();
-		//String nombre =new String();
-		try {
-		logger.info("el nombre insertado en try antes de cambio: "+nombre);
-		nombre =new String (producto_b.getNombre_productoB().getBytes("ISO-8859-1"),"UTF-8");
-		//nombre =new String (producto_b.getNombre_productoB().getBytes("UTF-8"),"ISO-8859-1");
-		//nombre =new String (nombre1.getBytes("ISO-8859-1"),"UTF-8");
-		
-		logger.info("el nombre insertado en try despue de cambio: "+nombre);
-		} catch(UnsupportedEncodingException uee) {
-		    uee.printStackTrace();
-		}
-		
-		
-		logger.info("el nombre modificado-update fuera try: "+nombre);
-		producto_b.setNombre_productoB(nombre);
-		
-		*/
-
+		//si llegamos aqui podemos actualizar el cliente.
 		logger.info("modCliente_B_form ");
 		cliente_b.setFecha_alta_b(new Date());
 		cliente_b.setAUTHORITY("ROLE_CLIENTE");
 		cliente_b.setENABLED(true);
-		cliente_BServiceImpl.update(cliente_b);
+		
+		
+		
+		
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes2 = new ArrayList<MediaType>();
+				acceptableMediaTypes2.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers2 = new HttpHeaders();
+				headers2.setAccept(acceptableMediaTypes2);
+				HttpEntity<Cliente_B> entity2 = new HttpEntity<Cliente_B>(cliente_b, headers2);
 
-		//return new ModelAndView("redirect:../admin/listado");
+				//enviamos el resquest como PUT
+		
+				
+				try {
+					
+				
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/cliente/{id}",
+									HttpMethod.PUT, entity2, Cliente_B.class,cliente_b.getIdusuarios_b());
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					}
+					
+		
+		//volvemos a la vista principal
 		return new ModelAndView("redirect:../../productos/listado");
 	
 	
@@ -266,16 +313,35 @@ public class ClienteController {
 	@RequestMapping(value="/cliente/modificarMiCuenta_B/", method = RequestMethod.GET)
 	public ModelAndView modMiCuenta_B_form(@RequestParam(value="login")String  login) throws Exception{
 		
+		logger.info(" en cliente /cliente/modificarMiCuenta_B/@@@@@@ con login: " + login);
 		
-		Integer id=cliente_BServiceImpl.findByCliente_B_login_usuario_b(login).getIdusuarios_b();
 		
-		//http://localhost:8080/empresaB/clientes/cliente/edit?id=id
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Cliente_B> entity = new HttpEntity<Cliente_B>(headers);
 
-		logger.info(" en modMiCuenta_B_form " +String.valueOf(id));
-
-		return new ModelAndView("redirect:../edit?id="+String.valueOf(id));
-		//return new ModelAndView("redirect:../edit?"+id);
-	
+		//enviamos el resquest como GET
+		ResponseEntity<Cliente_B> result=null;
+		
+		try {
+			
+			 result=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login}",
+							HttpMethod.GET, entity,Cliente_B.class, login);
+			 logger.info(" result 	restTemplate.exchange(http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login} result.getBody().getLogin_usuario_b() :"+result.getBody().getLogin_usuario_b());
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
+		String valorId=String.valueOf( result.getBody().getIdusuarios_b());
+		
+		return new ModelAndView("redirect:../edit?id="+valorId);
 	
 	}
 	
