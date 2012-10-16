@@ -99,7 +99,7 @@ height: 16px;
 	
 	<c:choose>
   		<c:when test="${empty pageContext.request.userPrincipal.name}">
-  			<li><a href="${pageContext.request.contextPath}/login">login</a> </li>
+  				<li><a href="${pageContext.request.contextPath}/login">login</a> </li>
   		</c:when>
   	
 		<c:otherwise>
@@ -107,6 +107,10 @@ height: 16px;
  		</c:otherwise>
 	</c:choose>
 	
+
+	 
+	 
+
 	
 	<sec:authorize access="hasRole('ROLE_ADMIN')">
 	

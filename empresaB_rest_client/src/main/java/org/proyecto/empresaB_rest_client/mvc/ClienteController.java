@@ -60,14 +60,14 @@ public class ClienteController {
 	private RestTemplate restTemplate = new RestTemplate();
 
 	
-	protected static Logger logger = Logger.getLogger("*en Cliente_B_BController*");
+	protected static Logger logger = Logger.getLogger("*en Cliente_B_BController*cliente@@@@@@@");
 	
 	
 	
 	
 	@RequestMapping(method = RequestMethod.GET, params="new")
 	public ModelAndView addContact() {
-		logger.info("metodo get --new-- ");
+		logger.info("metodo get --new  addContact--cliente@@@@@@@ ");
 		return new ModelAndView("cliente_b/edit", "cliente_b",new Cliente_B()  );
 
 	  }
@@ -80,8 +80,14 @@ public class ClienteController {
 		
 		logger.info("inicio de addCliente_B_form en aplicacion cliente@@@@@@@");
 		
-		
-		
+		if(result.hasErrors()) {
+		logger.info("addCliente_B_form ------tiene errores----"+result.toString());
+		logger.info("errores: "+result.toString());
+	
+		 return new ModelAndView("cliente_b/edit", "cliente_b",new Cliente_B()).addAllObjects(result.getModel());
+
+		}
+
 		
 		//comprobamos que no exista este login
 		// Preparamos acceptable media type
@@ -111,7 +117,7 @@ public class ClienteController {
 		//buscamos un usuario por el login enviado
 		Usuario_B usuarioBuscado=resultado.getBody();
 		
-		
+
 		
 		
 		

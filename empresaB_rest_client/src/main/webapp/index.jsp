@@ -11,6 +11,10 @@
 <h1>hola</h1>
 
 <%-- <c:redirect url="inicio.htm" /> --%>
+
+
 <c:redirect url="productos/listado" />
+
+
 </body>
 </html>

@@ -24,6 +24,26 @@
 	
    <context:component-scan base-package="org.proyecto.empresaB_rest_client" /> 
     <context:annotation-config />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
 <!--  	<context:spring-configured/> -->
 
 	 

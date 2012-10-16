@@ -54,6 +54,8 @@
     <servlet-name>imagenServlet</servlet-name>
     <url-pattern>/imagen/*</url-pattern>
   </servlet-mapping>
+  
+  
   <filter>
     <filter-name>springSecurityFilterChain</filter-name>
     <filter-class>
@@ -64,4 +66,6 @@
     <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  
 </web-app>
