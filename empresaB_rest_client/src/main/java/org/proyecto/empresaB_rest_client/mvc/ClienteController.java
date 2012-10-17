@@ -399,7 +399,7 @@ public class ClienteController {
 	@RequestMapping(value="/admin/borrar",method=RequestMethod.GET)
 	public ModelAndView delCliente_B_form(String id){
 		
-		logger.info("en borrar con ide con id @@@@@@ : "+id);		
+		logger.info("en borrar CLIENTE con ide con id @@@@@@ : "+id);		
 		
 		//obtenemos el cliente correspondiente a ese id		
 		

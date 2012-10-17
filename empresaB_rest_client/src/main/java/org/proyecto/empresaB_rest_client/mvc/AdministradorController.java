@@ -410,8 +410,46 @@ public class AdministradorController {
 	*/
 	
 	
+	@RequestMapping(value="/borrar",method=RequestMethod.GET)
+	public ModelAndView delAdministrador_B_form(String id){
+
+		logger.info("en borrarADMINISTRADOR con ide con id @@@@@@ : "+id);		
+		
+		//obtenemos el cliente correspondiente a ese id		
+		
+		
+		
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers = new HttpHeaders();
+				headers.setAccept(acceptableMediaTypes);
+				HttpEntity<Administrador_B> entity = new HttpEntity<Administrador_B>(headers);
+
+				//enviamos el resquest como POST
+				
+				//ResponseEntity<Cliente_B> result=null;
+				
+				try {
+					
+					// result=
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/administradores/administrador/{id}",
+									HttpMethod.DELETE, entity, Administrador_B.class,id);
+							
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					} 
+			
+		return new ModelAndView("redirect:listado");
+
+}
 	
-	
+/*	
 	@RequestMapping(value="/borrar",method=RequestMethod.GET)
 	public ModelAndView delAdministrador_B_form(String id){
 		logger.info(" en borrrar administrador ");
@@ -425,7 +463,7 @@ public class AdministradorController {
 
 		return new ModelAndView("redirect:listado");
 
-}
+}*/
 	
 
 }
