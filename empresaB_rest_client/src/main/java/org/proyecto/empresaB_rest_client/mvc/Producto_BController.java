@@ -4,6 +4,7 @@ package org.proyecto.empresaB_rest_client.mvc;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +39,9 @@ import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.bo.Producto_BBo;
 import org.proyecto.empresaB_rest_client.bo.impl.Producto_BBoImpl;
 import org.proyecto.empresaB_rest_client.exception.GenericException;
+import org.proyecto.empresaB_rest_client.model.Cliente_B;
+import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
+import org.proyecto.empresaB_rest_client.model.ListaProductos_B;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.service.Productos_BService;
 import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
@@ -56,7 +66,7 @@ public class Producto_BController {
 	ServletContext context;
 	
 	
-	
+	private RestTemplate restTemplate = new RestTemplate();
 	
 
 	
@@ -64,9 +74,45 @@ public class Producto_BController {
 		
 	
 	
+
+	@RequestMapping(value="/listado",method=RequestMethod.GET)
+	public ModelAndView listadoProductos_B(){
+		
+		
+		
+		
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<ListaProductos_B> entity = new HttpEntity<ListaProductos_B>(headers);
+		
+		// enviamos el request como GET
+		ModelAndView mav=new ModelAndView("producto_b/listaProductos");
+		try {
+			//realizamos consulta a servidor para que nos envie todos los clientes
+			ResponseEntity<ListaProductos_B> result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity, ListaProductos_B.class);
+		
+			mav.addObject("productos", result.getBody().getDataProducto());
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			}
+
+		return mav;
+	}
+		
+
 	
 	
 	
+	
+	/*
 	@RequestMapping(value="/listado",method=RequestMethod.GET)
 	public ModelAndView listadoProductos_B(){
 		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
@@ -77,6 +123,13 @@ public class Producto_BController {
 
 	   return new ModelAndView("producto_b/listaProductos","productos", lista);
 	}
+	
+	*/
+	
+	
+	
+	
+	
 	
 	
 	@RequestMapping(value="/listado2",method=RequestMethod.GET)
