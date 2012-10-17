@@ -13,7 +13,7 @@
         <sec:authorize access="hasRole('ROLE_ADMIN')">
         <td>
         	<c:url var="editUrl" value="/administradores/?new" />
-			<a href="${editUrl}"   onclick="return confirm('¿Quieres añdir un nuevo producto?')" onmouseover="window.status = 'Pulse para añadir otro administrador'; return true" onmouseout="window.status=''"> <span title='Pulse para Añadir otro administrador'> <img border=0 src="../resources/imagenes/nuevo.jpg" height=68 width=53> </a>
+			<a href="${editUrl}"   onclick="return confirm('¿Quieres añdir un nuevo Administrador?')" onmouseover="window.status = 'Pulse para añadir otro administrador'; return true" onmouseout="window.status=''"> <span title='Pulse para Añadir otro administrador'> <img border=0 src="../resources/imagenes/nuevo.jpg" height=68 width=53> </a>
 			
 		</td>
 		</sec:authorize>
@@ -58,14 +58,14 @@
 
         <td>
         	<c:url var="editUrl" value="/administradores/edit" />
-			<a href="${editUrl}?id=${administrador.idusuarios_b}"   onclick="return confirm('¿Quieres cambiar datos de este administrador?')"> <img border=0 src="../resources/imagenes/modificar.jpg" height=68 width=53> </a>
+			<a href="${editUrl}?id=${administrador.idusuarios_b}"   onclick="return confirm('¿Quieres cambiar datos de este administrador?')" onmouseover="window.status = 'Pulse para Editar Administrador'; return true" onmouseout="window.status=''"><span title='Pulse para Editar datos Administrador'>  <img border=0 src="../resources/imagenes/modificar.jpg" height=68 width=53> </a>
 			
 		</td>
 		
 		<td>
 
         	<c:url var="editUrl" value="/administradores/borrar" />
-			<a href="${editUrl}?id=${administrador.idusuarios_b}"   onclick="return confirm('¿Quieres borrar este administrador?')"> <img border=0 src="../resources/imagenes/borrar.jpg" height=68 width=53> </a>
+			<a href="${editUrl}?id=${administrador.idusuarios_b}"   onclick="return confirm('¿Quieres borrar este administrador?')" onmouseover="window.status = 'Pulse para borrar Administrador'; return true" onmouseout="window.status=''"> <span title='Pulse para Borrar Administrador'> <img border=0 src="../resources/imagenes/borrar.jpg" height=68 width=53> </a>
 			
 		</td>
 	

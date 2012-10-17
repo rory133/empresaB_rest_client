@@ -190,7 +190,7 @@ public class ClienteController {
 	//---listamos todos los clientes----
 	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
 	public ModelAndView listadoClientes_B(){
-		logger.info("en listadoClientes_B2 en client*");
+		logger.info("en listadoClientes_B2 en client en Cliente @@@@@@*");
 		
 		// Preparamos acceptable media type
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
@@ -261,6 +261,12 @@ public class ClienteController {
 	@RequestMapping(value="/cliente/modificarCliente_B", method = RequestMethod.POST)
 	public ModelAndView modCliente_B_form(@Valid @ModelAttribute("cliente_b")Cliente_B cliente_b, BindingResult  result) throws Exception{
 
+		if(result.hasErrors()) {
+		logger.info("modCliente_B_form ------tiene errores----"+result.toString());
+		logger.info("errores: "+result.toString());
+		 return new ModelAndView("cliente_b/edit", "cliente_b",new Cliente_B()).addAllObjects(result.getModel());
+
+		}
 		
 		logger.info("inicio de modCliente_B_form en cliente@@@@@@@");
 		//comprobamos que no exista este login
