@@ -45,7 +45,7 @@ import org.proyecto.empresaB_rest_client.model.ListaProductos_B;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.service.Productos_BService;
 import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
-import org.proyecto.empresaB_rest_client.util.UtilidadesImagen;
+
 
 
 
@@ -74,7 +74,7 @@ public class Producto_BController {
 		
 	
 	
-
+	//pedimo al servidor el listado de todos los productos
 	@RequestMapping(value="/listado",method=RequestMethod.GET)
 	public ModelAndView listadoProductos_B(){
 		
@@ -130,7 +130,7 @@ public class Producto_BController {
 	
 	
 	
-	
+/*	
 	
 	@RequestMapping(value="/listado2",method=RequestMethod.GET)
 	public ModelAndView listado2Productos_B(){
@@ -151,9 +151,14 @@ public class Producto_BController {
 	   //return new ModelAndView("producto_b/listaProductos","productos", lista);
 	}
 	
-	/*@RequestMapping(value = "/add", method = RequestMethod.GET)*/
+	*/
+	
+	
+	
+	
+	//cuando un administrador pide añadir productos le enviamos al formulario
 	@RequestMapping(value="/admin/" ,method = RequestMethod.GET, params="new")
-	public ModelAndView addContact() {
+	public ModelAndView addProducto() {
 		logger.info("metodo get --new-- ");
 		return new ModelAndView("producto_b/edit", "producto_b",new Producto_B());
 	  }
@@ -290,29 +295,73 @@ public class Producto_BController {
 		producto_b.setNombre_productoB(nombre);
 		*/
 		
-		if(image.isEmpty())
-		productos_BServiceImpl.save(producto_b);
+		if(image.isEmpty()){
+			logger.info("en SIN IMAGEN ");
+			//salvamos producto
+			// ----Preparamos acceptable media type----
+			List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+			acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+			
+			// preparamos el header
+			HttpHeaders headers = new HttpHeaders();
+			headers.setAccept(acceptableMediaTypes);
+			HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(producto_b,headers);
+
+			//enviamos el resquest como POST
+			
+			try {
+				//ResponseEntity<Cliente_B> clienteDevuelto = 
+						restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/admin/producto",
+								HttpMethod.POST, entity, Producto_B.class);
+		
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+			}
 		
 		
 
-		
+		}
 		try{
 			if(!image.isEmpty()){
-				productos_BServiceImpl.save(producto_b);
-				//byte[] bFile = new byte[image.getBytes().length];
+				//salvamos producto
+				// ----Preparamos acceptable media type----
+				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers = new HttpHeaders();
+				headers.setAccept(acceptableMediaTypes);
+				HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(producto_b,headers);
+				String idProductoCreado=null;
+
+				//enviamos el resquest como POST
+				
+				try {
+					
+					ResponseEntity<String> resultado = 
+							restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/admin/producto",
+									//HttpMethod.POST, entity, Producto_B.class);
+									HttpMethod.POST, entity, String.class);
+										
+					
+					
+					idProductoCreado=resultado.getBody();
+					logger.info("en CLIENTE ID DEL PRODUCTO DEVUELTO: "+resultado.getBody());
+							
+					} catch (Exception e) {
+							logger.error(e);
+				}
+				
 				logger.info("antes de validar imagen en addProducto_B_form");
 				validarImagen (image);
-				logger.info("despues de validar imagen en addProducto_B_form");
-				logger.info("salvando imagen "+ producto_b.getIdproductob() +"en try ");
-				saveImage(producto_b.getIdproductob()+".jpg",image);
 				
-				//producto_b.setImagen_b(bFile);
-/*				logger.info("request.getparametrermap"+request.getParameterMap().toString());
+				logger.info("salvando imagen "+ idProductoCreado +"en try ");
+				
+				saveImage(idProductoCreado+".jpg",image);
 
-				logger.info("request.getPathInfo()"+ request.getPathInfo());
-				logger.info("request.getPathTranslated()" + request.getPathTranslated());*/
 				
-				logger.info("salvando imagen "+ producto_b.getIdproductob() +"en try ");
 			}
 			
 		}catch (Exception e){
@@ -325,10 +374,7 @@ public class Producto_BController {
 		
 		logger.info("addProducto_B_form ");
 		
-		
-		
-/*		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		return new ModelAndView("producto_b/listaProductos","productos", lista);*/
+
 		return new ModelAndView("redirect:../listado");
 		
 		
