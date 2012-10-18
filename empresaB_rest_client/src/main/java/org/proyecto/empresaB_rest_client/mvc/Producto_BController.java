@@ -173,7 +173,7 @@ public class Producto_BController {
 	@RequestMapping(value="/admin/modificarProductoB", method = RequestMethod.POST)
 	public ModelAndView modProducto_B_form(@Valid @ModelAttribute("producto_b")Producto_B producto_b,  BindingResult  result,@RequestParam(value="image",required=false)MultipartFile image)throws Exception{
 
-		
+		//si tiene errores lo devolvemos a la pagina de modificar Producto_B
 		if(result.hasErrors()) {
 		logger.info("modificarProducto_B_form ------tiene errores----"+result.toString());
 			return new ModelAndView("producto_b/modificar", "producto_b",producto_b).addAllObjects(result.getModel());
@@ -202,8 +202,34 @@ public class Producto_BController {
 		producto_b.setNombre_productoB(nombre);
 		
 		*/
-			if(image.isEmpty())
-			productos_BServiceImpl.update(producto_b);
+		if(image.isEmpty()){
+			logger.info("en SIN IMAGEN ");
+			//Actualizamos producto
+			// ----Preparamos acceptable media type----
+			List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+			acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+			
+			// preparamos el header
+			HttpHeaders headers = new HttpHeaders();
+			headers.setAccept(acceptableMediaTypes);
+			HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(producto_b,headers);
+
+			//enviamos el resquest como POST
+			
+			try {
+				//ResponseEntity<Cliente_B> clienteDevuelto = 
+						restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/admin/producto",
+								HttpMethod.PUT, entity, Producto_B.class);
+		
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+			}
+		
+		
+
+		}
 			
 			
 		try{
@@ -214,12 +240,28 @@ public class Producto_BController {
 				validarImagen (image);
 				logger.info("en try despues de validar imagen en modificar ");
 				saveImage(producto_b.getIdproductob()+".jpg",image);
-				productos_BServiceImpl.update(producto_b);
-				//producto_b.setImagen_b(bFile);
-/*				logger.info("request.getparametrermap"+request.getParameterMap().toString());
+				//Actualizamos producto
+				// ----Preparamos acceptable media type----
+				List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers = new HttpHeaders();
+				headers.setAccept(acceptableMediaTypes);
+				HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(producto_b,headers);
 
-				logger.info("request.getPathInfo()"+ request.getPathInfo());
-				logger.info("request.getPathTranslated()" + request.getPathTranslated());*/
+				//enviamos el resquest como POST
+				
+				try {
+					//ResponseEntity<Cliente_B> clienteDevuelto = 
+							restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/admin/producto",
+									HttpMethod.PUT, entity, Producto_B.class);
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+				}
 				
 				logger.info("salvando imagen "+ producto_b.getIdproductob() +"en try ");
 			}
@@ -248,13 +290,39 @@ public class Producto_BController {
 
 
 		Producto_B productob=new Producto_B();
-		productob=	productos_BServiceImpl.findByProducto_BIdProducto_b(id);
+		//productob=	productos_BServiceImpl.findByProducto_BIdProducto_b(id);
+		
+		//obtenemos el producto correspondiente a ese id
+				// Preparamos acceptable media type
+						List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+						acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+						
+						// preparamos el header
+						HttpHeaders headers = new HttpHeaders();
+						headers.setAccept(acceptableMediaTypes);
+						HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(headers);
+
+						//enviamos el resquest como POST
+						ResponseEntity<Producto_B> result=null;
+						
+						try {
+							
+							 result=
+							restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/producto/{id}",
+											HttpMethod.GET, entity, Producto_B.class,id);
+					
+							
+									
+							} catch (Exception e) {
+									logger.error(e);
+							} 
+		
+		
+						productob=result.getBody();
+		
 		
 		logger.info("producto pasado a edit-modificar: "+productob.getNombre_productoB());
-		
-		
-		//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		//return new ModelAndView("producto_b/listaProductos","productos", lista);
+
 		return new ModelAndView("producto_b/modificar", "producto_b",productob);
 	
 }

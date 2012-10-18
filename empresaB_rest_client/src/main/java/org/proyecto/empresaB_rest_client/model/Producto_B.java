@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.springframework.format.annotation.NumberFormat;
@@ -26,7 +27,7 @@ import org.springframework.format.annotation.NumberFormat.Style;
 
 
 
-
+@XmlRootElement(name="producto_b")
 @Entity
 @Table(name = "producto_b")
 public class Producto_B implements Serializable{
