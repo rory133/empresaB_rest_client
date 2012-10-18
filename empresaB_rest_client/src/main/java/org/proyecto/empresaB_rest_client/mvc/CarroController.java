@@ -96,19 +96,34 @@ public class CarroController {
 		
 		if (session.getAttribute("carro_b")==null){
 			logger.info("if (carro_b.getIdcarro_b()==null)");
+			
+			
 			Carro_B carro_b =new Carro_B();
+			
+			
 			User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
 			logger.info("usuario user user.getUsername() : "+user.getUsername());
+			
 			Usuario_B usuario= new Usuario_B();
+			
 			usuario= cliente_BServiceImpl.findByCliente_B_login_usuario_b(user.getUsername());
+			
+			
 			Cliente_B cliente= new Cliente_B();
 			cliente=(Cliente_B)usuario;
+			
 			carro_b.setCliente_b(cliente);
 			carro_b.setFecha_b(new Date());
 			carro_b.setEnviado(false);
 			carro_b.setPagado(false);
 			logger.info("antes de salvar carroooooo ");
+			
+			
 			carro_BService.save(carro_b);
+			
+			
+			
 			session.setAttribute("carro_b", carro_b);
 			logger.info("if (carro_b.getIdcarro_b()==null) despues    :  " +carro_b.getIdcarro_b() );
 		}
