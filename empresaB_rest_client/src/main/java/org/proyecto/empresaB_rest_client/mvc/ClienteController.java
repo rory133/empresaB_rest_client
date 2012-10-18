@@ -401,7 +401,7 @@ public class ClienteController {
 		
 		logger.info("en borrar CLIENTE con ide con id @@@@@@ : "+id);		
 		
-		//obtenemos el cliente correspondiente a ese id		
+		
 		
 		
 		

@@ -448,21 +448,41 @@ public class Producto_BController {
 		
 	
 }
-	
+	//borramos un pruducto por id
 	@RequestMapping(value="/admin/borrar",method=RequestMethod.GET)
 	public ModelAndView delProducto_B_form(String id){
 
 		logger.info("en borrar producto con id: "+id);
-		Producto_B productob=new Producto_B();
-		productob=	productos_BServiceImpl.findByProducto_BIdProducto_b(id);
+
 		
-		logger.info("borrando producto : "+productob.getNombre_productoB());
-		productos_BServiceImpl.delete(productob);
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
 		
-/*		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		return new ModelAndView("producto_b/listaProductos","productos", lista);*/
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(headers);
+
+
+		try {
+			
+			// result=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/producto/{id}",
+							HttpMethod.DELETE, entity, Producto_B.class,id);
+					
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			} 
+		
+
+		
+
 		return new ModelAndView("redirect:../listado");
-		//return new ModelAndView("producto_b/modificar", "producto_b",productob);
+
 	
 }
 	
