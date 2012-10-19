@@ -730,7 +730,7 @@ public class CarroController {
 	
 	
 	@RequestMapping(value="/eliminarProductoCarro", method = RequestMethod.GET)
-	public ModelAndView eliminarProductoCarro(@RequestParam(value="idProductoSeleccionado")String  idProductoSeleccionado,@RequestParam(value="idProducto")String  idProducto, @RequestParam(value="cantidad")String cantidad,  HttpSession session) throws Exception{
+	public ModelAndView eliminarProductoCarro(@RequestParam(value="idProductoSeleccionado")String  idProductoSeleccionado,@RequestParam(value="idProducto")String  idProducto, @RequestParam(value="cantidad")String cantidad,  @RequestParam(value="idCarro")String idCarro, HttpSession session) throws Exception{
 		logger.info("en /eliminarProductoCarro en CLIENTE @@@@@@@@@@");
 		//eliminar el producto
 		Producto_BSeleccionado producto_BSeleccionado=new Producto_BSeleccionado();
@@ -752,14 +752,14 @@ public class CarroController {
 			
 			 result2=
 			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionadoIDProductoIdCarro/{id}/{idCarro}",
-							HttpMethod.GET, entity2, Producto_BSeleccionado.class,idProducto,String.valueOf( carro_b.getIdcarro_b()));
-	
+						//	HttpMethod.GET, entity2, Producto_BSeleccionado.class,idProducto,String.valueOf( carro_b.getIdcarro_b()));
+					HttpMethod.GET, entity2, Producto_BSeleccionado.class,idProducto,idCarro);
 			
 					
 			} catch (Exception e) {
 					logger.error(e);
 			} 
-		logger.info("en /eliminarProductoCarro en CLIENTE @@@@@@@@@@ nombre producto a eliminar"+result2.getBody().getIdproductoSeleccionado() );
+		
 		producto_BSeleccionado=result2.getBody();
 		//producto_BSeleccionado=producto_BSeleccionadoService.findByProducto_BSeleccionadoIdProducto_b_y_carro_b(idProducto, String.valueOf(carro_b.getIdcarro_b()));
 		
@@ -886,7 +886,8 @@ public class CarroController {
 		ResponseEntity<ListaCarros_B> result3=null;
 		try {
 			//realizamos consulta a servidor para que nos envie todos los clientes
-		 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro_B/carros", HttpMethod.GET, entity3, ListaCarros_B.class);
+		 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carros",
+				 HttpMethod.GET, entity3, ListaCarros_B.class);
 		
 			
 			
@@ -932,7 +933,8 @@ public class CarroController {
 			ResponseEntity<ListaProductos_BSeleccionados> result=null;
 			try {
 				//realizamos consulta a servidor para que nos envie todos los clientes
-			 result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/producto_b_seleccionado/producto_b_seleccionadoIdCarro/{idCarro}", HttpMethod.GET, entity, ListaProductos_BSeleccionados.class,String.valueOf(elementoCarro.getIdcarro_b()));
+			 result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionadoIdCarro/{idCarro}", 
+					 HttpMethod.GET, entity, ListaProductos_BSeleccionados.class,String.valueOf(elementoCarro.getIdcarro_b()));
 			
 				
 				
@@ -946,7 +948,7 @@ public class CarroController {
 			
 			
 			
-			logger.info("iprimo el tamaño de la lista de productos de cada carro: "+listaProductosCarro.size());
+			
 			Iterator<Producto_BSeleccionado> itr =listaProductosCarro.iterator();
 			Set<ListaProductosSeleccionados> listaProductos=new HashSet<ListaProductosSeleccionados>(0);
 			while (itr.hasNext()) {
@@ -997,7 +999,7 @@ public class CarroController {
 		ResponseEntity<ListaProductos_BSeleccionados> result3=null;
 		try {
 			//realizamos consulta a servidor para que nos envie todos los clientes
-		 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/producto_b_seleccionado/producto_b_seleccionadoIdCarro/{idCarro}", 
+		 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionadoIdCarro/{idCarro}", 
 				 HttpMethod.GET, entity3, ListaProductos_BSeleccionados.class,idCarro);
 		
 			
@@ -1058,6 +1060,7 @@ public class CarroController {
 		
 		
 		ModelAndView mav= new ModelAndView("carro_b/verDetallesCarro");
+		mav.addObject("idCarro", idCarro);
 		mav.addObject("productos", lista);
 		mav.addObject("productosSeleccionados",listaProductos);
 		return mav;
@@ -1121,14 +1124,14 @@ public class CarroController {
 		// preparamos el header
 		HttpHeaders headers4 = new HttpHeaders();
 		headers4.setAccept(acceptableMediaTypes4);
-		HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(carro_b,headers4);
+		HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(headers4);
 
 		//enviamos el resquest como GET
 		ResponseEntity<Carro_B> carroDevuelto=null;
 		try {
 			 carroDevuelto = 
 					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b/{id}",
-							HttpMethod.GET, entity4, Carro_B.class);
+							HttpMethod.GET, entity4, Carro_B.class,idCarro);
 	
 			
 					
@@ -1138,11 +1141,11 @@ public class CarroController {
 		
 		
 		
-		carro_b=carroDevuelto.getBody();		
+		Carro_B carro=carroDevuelto.getBody();		
 		//carro_b=carro_BService.findByCarro_BIdCarro_b(idCarro);
-		if(carro_b.getPagado())
-		  carro_b.setPagado(false);
-		else carro_b.setPagado(true);
+		if(carro.getPagado())
+		  carro.setPagado(false);
+		else carro.setPagado(true);
 		//actualizamos el carro
 		
 		
@@ -1153,7 +1156,7 @@ public class CarroController {
 				// preparamos el header
 				HttpHeaders headers = new HttpHeaders();
 				headers.setAccept(acceptableMediaTypes);
-				HttpEntity<Carro_B> entity = new HttpEntity<Carro_B>(carro_b,headers);
+				HttpEntity<Carro_B> entity = new HttpEntity<Carro_B>(carro,headers);
 
 				//enviamos el resquest como PUT
 				
@@ -1185,31 +1188,31 @@ public class CarroController {
 		// preparamos el header
 		HttpHeaders headers4 = new HttpHeaders();
 		headers4.setAccept(acceptableMediaTypes4);
-		HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(carro_b,headers4);
+		HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(headers4);
 
 		//enviamos el resquest como GET
 		ResponseEntity<Carro_B> carroDevuelto=null;
 		try {
 			 carroDevuelto = 
 					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b/{id}",
-							HttpMethod.GET, entity4, Carro_B.class);
+							HttpMethod.GET, entity4, Carro_B.class,idCarro);
 	
 			
 					
 			} catch (Exception e) {
 					logger.error(e);
 		}
-		carro_b=carroDevuelto.getBody();	
+		Carro_B carro=carroDevuelto.getBody();	
 		//carro_b=carro_BService.findByCarro_BIdCarro_b(idCarro);
 		
 		
 		
-		if(carro_b.getEnviado())
-		  carro_b.setEnviado(false);
-		else{ carro_b.setEnviado(true);
+		if(carro.getEnviado())
+		  carro.setEnviado(false);
+		else{ carro.setEnviado(true);
 		String content="apreciado usuario le informamos que el pago de su pedido numero "+idCarro+" ha sido enviado, en breve recibirá información de la agencia de transportes";
 		String subject="pedido: "+idCarro;		
-		mail.sendMail( carro_b.getCliente_b().getLogin_usuario_b(), content, carro_b.getCliente_b().getEmail_b(), subject);
+		mail.sendMail( carro.getCliente_b().getLogin_usuario_b(), content, carro.getCliente_b().getEmail_b(), subject);
 		
 		}
 		
@@ -1223,7 +1226,7 @@ public class CarroController {
 				// preparamos el header
 				HttpHeaders headers = new HttpHeaders();
 				headers.setAccept(acceptableMediaTypes);
-				HttpEntity<Carro_B> entity = new HttpEntity<Carro_B>(carro_b,headers);
+				HttpEntity<Carro_B> entity = new HttpEntity<Carro_B>(carro,headers);
 
 				//enviamos el resquest como PUT
 						
