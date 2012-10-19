@@ -214,7 +214,7 @@ public class Producto_BController {
 			headers.setAccept(acceptableMediaTypes);
 			HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(producto_b,headers);
 
-			//enviamos el resquest como POST
+			//enviamos el resquest como PUT
 			
 			try {
 				//ResponseEntity<Cliente_B> clienteDevuelto = 

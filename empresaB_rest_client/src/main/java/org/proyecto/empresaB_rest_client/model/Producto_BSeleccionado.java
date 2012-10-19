@@ -19,8 +19,9 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.xml.bind.annotation.XmlRootElement;
 
-
+@XmlRootElement(name="producto_bSeleccionado")
 @Entity
 @Table(name = "producto_bseleccionado")
 public class Producto_BSeleccionado implements Serializable {
