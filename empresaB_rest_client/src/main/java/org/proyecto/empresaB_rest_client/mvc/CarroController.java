@@ -720,6 +720,7 @@ public class CarroController {
 		//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
 		ModelAndView mav= new ModelAndView("carro_b/verCarroActual");
 		mav.addObject("productos", lista);
+		mav.addObject("idCarro", String.valueOf( carro_b.getIdcarro_b()));
 		mav.addObject("productosSeleccionados",listaProductos);
 		return mav;
 	}
