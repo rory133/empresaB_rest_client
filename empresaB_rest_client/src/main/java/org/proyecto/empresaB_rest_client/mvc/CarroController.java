@@ -886,7 +886,7 @@ public class CarroController {
 		
 		ResponseEntity<ListaCarros_B> result3=null;
 		try {
-			//realizamos consulta a servidor para que nos envie todos los clientes
+			//realizamos consulta a servidor para que nos envie todos los carros
 		 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carros",
 				 HttpMethod.GET, entity3, ListaCarros_B.class);
 		
@@ -902,7 +902,7 @@ public class CarroController {
 		
 		
 		
-		
+		//buscamos los datos de cada carro
 		Iterator<Carro_B> iterCarro =listaCarros.iterator();
 		
 		
@@ -916,9 +916,9 @@ public class CarroController {
 			listaCarrosPedidos.setEnviado(elementoCarro.getEnviado());
 			listaCarrosPedidos.setIdCarro(elementoCarro.getIdcarro_b());
 			listaCarrosPedidos.setFechaPedido(elementoCarro.getFecha_b());
-			logger.info("imprimo el login del usuario desde listaCarrospedidos: "+listaCarrosPedidos.getLoginCliente());
+			//logger.info("imprimo el login del usuario desde listaCarrospedidos: "+listaCarrosPedidos.getLoginCliente());
 			
-			
+			//le añadimos tambien los productos seleccionados de cada carro
 			// Preparamos acceptable media type
 			List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 			acceptableMediaTypes.add(MediaType.APPLICATION_XML);
@@ -944,11 +944,12 @@ public class CarroController {
 						logger.error(e);
 				}
 			
-			List<Producto_BSeleccionado> listaProductosCarro= result.getBody().getDataProductoBSeleccionado();			
+			List<Producto_BSeleccionado> listaProductosCarro= null;
+			listaProductosCarro=result.getBody().getDataProductoBSeleccionado();			
 			//List<Producto_BSeleccionado> listaProductosCarro=producto_BSeleccionadoService.findByProducto_BSeleccionadoPorIdcarro_b(String.valueOf(elementoCarro.getIdcarro_b()));
 			
 			
-			
+			if(null!=listaProductosCarro){
 			
 			Iterator<Producto_BSeleccionado> itr =listaProductosCarro.iterator();
 			Set<ListaProductosSeleccionados> listaProductos=new HashSet<ListaProductosSeleccionados>(0);
@@ -965,6 +966,12 @@ public class CarroController {
 			}
 			listaCarrosPedidos.setListaProductosSeleccionados(listaProductos);
 			listaCarrosAMostrar.add(listaCarrosPedidos);
+			
+			}else{
+				listaCarrosPedidos.setListaProductosSeleccionados(null);
+				listaCarrosAMostrar.add(listaCarrosPedidos);
+			}
+			
 		}
 		
 		
