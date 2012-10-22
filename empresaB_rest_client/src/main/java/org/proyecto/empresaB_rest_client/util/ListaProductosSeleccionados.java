@@ -10,15 +10,22 @@ public class ListaProductosSeleccionados {
 	Integer idProductoSeleccionado;
 	Integer idproducto_b;
 	BigDecimal precio_b;
+	BigDecimal subTotal;
 	
 	
 	
 	
 	
 	
-	
+
 	public ListaProductosSeleccionados() {
 
+	}
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
 	}
 	public String getNombreProducto() {
 		return nombreProducto;

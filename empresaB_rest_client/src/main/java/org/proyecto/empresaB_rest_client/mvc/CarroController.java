@@ -1,5 +1,6 @@
 package org.proyecto.empresaB_rest_client.mvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -124,7 +125,9 @@ public class CarroController {
 			carro_b.setFecha_b(new Date());
 			carro_b.setEnviado(false);
 			carro_b.setPagado(false);
-			
+			//ponemos a cero el total
+			carro_b.setTotal(new BigDecimal(0));
+			logger.info("en /sumaProducto ççççç pongo a cero el carro: "+carro_b.getTotal());
 			
 			
 			//carro_BService.save(carro_b);
@@ -160,6 +163,10 @@ public class CarroController {
 		}
 		
 		carro_b=(Carro_B)session.getAttribute("carro_b");
+		
+		
+		
+		
 		logger.info("imprimo el id del carro: "+carro_b.getIdcarro_b());
 		logger.info("imprimo la fecha del carro: "+carro_b.getFecha_b());
 		//Carro_B carro_b=new Carro_B(new Date(),)
@@ -214,7 +221,7 @@ public class CarroController {
 
 				producto=result.getBody();
 		
-				logger.info("en /sumaProducto nombre del procduto_b obtenido de servidor: "+producto.getNombre_productoB());
+				logger.info("en /sumaProducto nombre del producto_b obtenido de servidor: "+producto.getNombre_productoB());
 		
 		
 		
@@ -229,9 +236,9 @@ public class CarroController {
 		producto_BSeleccionado.setProducto_b(producto);
 		logger.info(" ide carro_b antes de ponerlo en producto seleccionado: "+carro_b.getIdcarro_b());
 		producto_BSeleccionado.setCarro_b(carro_b);	
-		producto_BSeleccionado.setCantidad(Integer.parseInt(cantidad));
-
-		//PONER AQUI SUBTOTAL
+		//producto_BSeleccionado.setCantidad(Integer.parseInt(cantidad));
+		
+		
 		
 		logger.info("carro_b.getIdcarro_b():"+carro_b.getIdcarro_b());
 		Producto_BSeleccionado producto_BSeleccionado_test=new Producto_BSeleccionado();
@@ -336,6 +343,9 @@ public class CarroController {
 		//actualizacomos el valor de existencia
 		producto.setCantidad_existencias(producto.getCantidad_existencias()+producto_BSeleccionado_test.getCantidad()-Integer.parseInt(cantidad));
 		
+		//actualizamos la cantidad de producto_BSeleccionado
+		producto_BSeleccionado.setCantidad(Integer.parseInt(cantidad));
+		
 		//actualizamos producto con el nuevo valor de cantidad
 		
 		// ----Preparamos acceptable media type----
@@ -361,9 +371,22 @@ public class CarroController {
 		}
 		//productos_BServiceImpl.update(producto);
 		
+		//actualizamos el total del carro
 		
 		
+		logger.info("en /sumaProducto ççççç valor carroTotal antes de restar el valor anterior: "+carro_b.getTotal());
+		//restamos el subtotal del producto seleccionado al total del carro		producto_BSeleccionado_test
+		carro_b.setTotal(carro_b.getTotal().subtract(producto_BSeleccionado_test.getSubTotal()));
 		
+		logger.info("en /sumaProducto ççççç valor carroTotal DESPUES de restar el valor anterior: "+carro_b.getTotal());
+		
+		//añadidmo valor al subtotal del producto seleccionado
+		BigDecimal temp = new BigDecimal(Integer.parseInt(cantidad));
+		producto_BSeleccionado.setSubTotal(producto.getPrecio_b().multiply(temp));
+		logger.info("en /sumaProducto ççççç VALOR DE PRODUCTOBSELECCIONADO CUANDO SE ACTUALIZA VALOR YA QUE SE HABIA PEDIDO ANTES: "+producto_BSeleccionado.getSubTotal());
+		
+		//acutalizamos el nuevo valor del total en carro
+		carro_b.setTotal(carro_b.getTotal().add(producto_BSeleccionado.getSubTotal()));
 		//actualizacomos producto_BSeleccionado
 		
 		producto_BSeleccionado.setIdproductoSeleccionado(producto_BSeleccionado_test.getIdproductoSeleccionado());
@@ -440,9 +463,14 @@ public class CarroController {
 				mav.addObject("productoPedido",idProducto);
 				return mav;
 				}
+			
+
+			
+			
 			logger.info("la cantidad pedida NO supera las existencias LAS ACTUALIZAMOS EN PRODUCTO::::::::");
 			//actualizacomos el valor de existencias en el producto
-			
+			//añadimos el carro al productoSeleccionado
+			producto_BSeleccionado.setCarro_b(carro_b);	
 			producto.setCantidad_existencias(producto.getCantidad_existencias()-Integer.parseInt(cantidad));
 			//y lo salvamos
 			
@@ -469,6 +497,14 @@ public class CarroController {
 				}
 				
 				//productos_BServiceImpl.update(producto);	
+				
+				//actualizamos la cantidad de producto_BSeleccionado
+				producto_BSeleccionado.setCantidad(Integer.parseInt(cantidad));
+				
+				//añadidmo valor al subtotal del producto seleccionado
+				BigDecimal temp = new BigDecimal(Integer.parseInt(cantidad));
+				producto_BSeleccionado.setSubTotal(producto.getPrecio_b().multiply(temp));
+				logger.info("en /sumaProducto ççççç VALOR DE SUTTOTAL DE PRODUCTO_BSELECCIONADO DESPUED DE AÑADIRLE SUBTOTAL POR PRIMERA VEZ: "+producto_BSeleccionado.getSubTotal());
 				
 				
 				logger.info("SALVAMOS PRUDUCTO SELECCIONADO::::::::");
@@ -497,10 +533,21 @@ public class CarroController {
 				logger.info("HEMOS SALVADO PRUDUCTO SELECCIONADO::::::::");
 				//producto_BSeleccionadoService.save(producto_BSeleccionado);
 				//producto_BSeleccionadoService.update(producto_BSeleccionado);
+				
+				
+				logger.info("ACTUALIZAMOS CARRO::::::::");
+				carro_b.getProducto_BSeleccionado().add(producto_BSeleccionado);
+				
+				//sumamos el subtotal del producto seleccionado al total del carro		
+				carro_b.setTotal(carro_b.getTotal().add(producto_BSeleccionado.getSubTotal()));
 		
 		}
-		logger.info("ACTUALIZAMOS CARRO::::::::");
-		carro_b.getProducto_BSeleccionado().add(producto_BSeleccionado);
+		/*logger.info("ACTUALIZAMOS CARRO::::::::");
+		carro_b.getProducto_BSeleccionado().add(producto_BSeleccionado);*/
+		
+		
+
+		
 		//Actualizamos el carro
 		
 		// ----Preparamos acceptable media type----
@@ -573,6 +620,7 @@ public class CarroController {
 			lista.setIdProductoSeleccionado(element.getIdproductoSeleccionado());
 			lista.setNombreProducto(element.getProducto_b().getNombre_productoB());
 			lista.setPrecio_b(element.getProducto_b().getPrecio_b());
+			lista.setSubTotal(element.getSubTotal());
 			listaProductos.add(lista);
 			
 		}
@@ -683,6 +731,7 @@ public class CarroController {
 			lista.setIdProductoSeleccionado(element.getIdproductoSeleccionado());
 			lista.setNombreProducto(element.getProducto_b().getNombre_productoB());
 			lista.setPrecio_b(element.getProducto_b().getPrecio_b());
+			lista.setSubTotal(element.getSubTotal());
 			listaProductos.add(lista);
 			
 		}
@@ -724,7 +773,7 @@ public class CarroController {
 		mav.addObject("productosSeleccionados",listaProductos);
 		return mav;
 	}
-	
+	 
 	
 	
 	
@@ -733,6 +782,11 @@ public class CarroController {
 	@RequestMapping(value="/eliminarProductoCarro", method = RequestMethod.GET)
 	public ModelAndView eliminarProductoCarro(@RequestParam(value="idProductoSeleccionado")String  idProductoSeleccionado,@RequestParam(value="idProducto")String  idProducto, @RequestParam(value="cantidad")String cantidad,  @RequestParam(value="idCarro")String idCarro, HttpSession session) throws Exception{
 		logger.info("en /eliminarProductoCarro en CLIENTE @@@@@@@@@@");
+		
+	
+		
+		
+		
 		//eliminar el producto
 		Producto_BSeleccionado producto_BSeleccionado=new Producto_BSeleccionado();
 		
@@ -765,7 +819,36 @@ public class CarroController {
 		//producto_BSeleccionado=producto_BSeleccionadoService.findByProducto_BSeleccionadoIdProducto_b_y_carro_b(idProducto, String.valueOf(carro_b.getIdcarro_b()));
 		
 		
+		
+		//obtenemos el carro
+		// ----Preparamos acceptable media type----
+		List<MediaType> acceptableMediaTypes1 = new ArrayList<MediaType>();
+		acceptableMediaTypes1.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers1 = new HttpHeaders();
+		headers1.setAccept(acceptableMediaTypes1);
+		HttpEntity<Carro_B> entity1 = new HttpEntity<Carro_B>(headers1);
 
+		//enviamos el resquest como GET
+		ResponseEntity<Carro_B> carroDevuelto=null;
+		try {
+			 carroDevuelto = 
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b/{id}",
+							HttpMethod.GET, entity1, Carro_B.class,idCarro);
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+		}
+
+		Carro_B carroTemp=carroDevuelto.getBody();
+		//reducimos el total del carro el valor del producto seleccionado
+		carroTemp.setTotal(carroTemp.getTotal().subtract(producto_BSeleccionado.getSubTotal()));
+
+
+		//eliminamos el productoSeleccionado
 		// Preparamos acceptable media type
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
@@ -855,12 +938,39 @@ public class CarroController {
 		
 		//productos_BServiceImpl.update(producto);
 		
+		//Actualizamos el carro
+		
+				// ----Preparamos acceptable media type----
+						List<MediaType> acceptableMediaTypes6 = new ArrayList<MediaType>();
+						acceptableMediaTypes6.add(MediaType.APPLICATION_XML);
+						
+						// preparamos el header
+						HttpHeaders headers6 = new HttpHeaders();
+						headers6.setAccept(acceptableMediaTypes6);
+						HttpEntity<Carro_B> entity6 = new HttpEntity<Carro_B>(carroTemp,headers6);
+
+						//enviamos el resquest como PUT
+						
+						try {
+							//ResponseEntity<Cliente_B> clienteDevuelto = 
+									restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b",
+											HttpMethod.PUT, entity6, Carro_B.class);
+					
+							
+									
+							} catch (Exception e) {
+									logger.error(e);
+						}
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		//devolvemos vista a verCarroActual
-		
-
-		
 		return new ModelAndView("redirect: verCarro");
 	}
 	
@@ -916,6 +1026,7 @@ public class CarroController {
 			listaCarrosPedidos.setEnviado(elementoCarro.getEnviado());
 			listaCarrosPedidos.setIdCarro(elementoCarro.getIdcarro_b());
 			listaCarrosPedidos.setFechaPedido(elementoCarro.getFecha_b());
+			listaCarrosPedidos.setTotal(elementoCarro.getTotal());
 			//logger.info("imprimo el login del usuario desde listaCarrospedidos: "+listaCarrosPedidos.getLoginCliente());
 			
 			//le añadimos tambien los productos seleccionados de cada carro
@@ -962,6 +1073,7 @@ public class CarroController {
 				lista.setIdProductoSeleccionado(element.getIdproductoSeleccionado());
 				lista.setNombreProducto(element.getProducto_b().getNombre_productoB());
 				lista.setPrecio_b(element.getProducto_b().getPrecio_b());
+				lista.setSubTotal(element.getSubTotal());
 				listaProductos.add(lista);			
 			}
 			listaCarrosPedidos.setListaProductosSeleccionados(listaProductos);
@@ -1032,6 +1144,7 @@ public class CarroController {
 			lista.setIdProductoSeleccionado(element.getIdproductoSeleccionado());
 			lista.setNombreProducto(element.getProducto_b().getNombre_productoB());
 			lista.setPrecio_b(element.getProducto_b().getPrecio_b());
+			lista.setSubTotal(element.getSubTotal());
 			listaProductos.add(lista);
 			
 		}

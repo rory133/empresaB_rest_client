@@ -1,6 +1,7 @@
 package org.proyecto.empresaB_rest_client.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +44,10 @@ public class Carro_B implements Serializable{
 	private Cliente_B cliente_b;
 	private Boolean pagado;
 	private Boolean enviado;
+	private BigDecimal total;
 	
+
+
 
 	public Carro_B() {
 	}
@@ -143,7 +147,15 @@ public class Carro_B implements Serializable{
 		this.enviado = enviado;
 	}
 	
-	
+	@Column(name = "TOTAL")
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
 	
 	
 	

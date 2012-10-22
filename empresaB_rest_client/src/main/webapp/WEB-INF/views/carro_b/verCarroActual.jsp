@@ -94,6 +94,7 @@ h4 {color:#B40431;}
         <td>
                  ${productosSeleccionados.precio_b*productosSeleccionados.cantidad}
                  <c:set var="total" value="${total+(productosSeleccionados.precio_b*productosSeleccionados.cantidad)}" scope="page" />
+                 ${productosSeleccionados.subTotal}
          
          </td>
         

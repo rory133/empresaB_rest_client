@@ -1,5 +1,6 @@
 package org.proyecto.empresaB_rest_client.util;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ public class ListaPedidos implements Comparable <ListaPedidos> {
 	Boolean pagado;
 	Boolean enviado;
 	Date fechaPedido;
+	BigDecimal total;
 	Set<ListaProductosSeleccionados> listaProductosSeleccionados;
 	
 	//ordenamos la lista por IdCarro
@@ -21,6 +23,16 @@ public class ListaPedidos implements Comparable <ListaPedidos> {
 	
 	public ListaPedidos() {
 	
+	}
+	
+	
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
 	}
 
 	public Integer getIdCliente() {
