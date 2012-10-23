@@ -1,5 +1,8 @@
 package org.proyecto.empresaB_rest_client.mvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -10,12 +13,18 @@ import org.proyecto.empresaB_rest_client.model.TarjetaCredito;
 import org.proyecto.empresaB_rest_client.service.impl.Carro_BServiceImpl;
 import org.proyecto.empresaB_rest_client.util.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,8 +40,9 @@ public class tarjetaController {
 	@Autowired
 	Carro_BServiceImpl carro_BService;
 	
-	@Autowired
-	private Mail mail;
+
+	
+	private RestTemplate restTemplate = new RestTemplate();
 	
 	protected static Logger logger = Logger.getLogger("*en tarjetaController*");
 	
@@ -41,7 +51,32 @@ public class tarjetaController {
 	@RequestMapping(value="/validarTarjeta", method = RequestMethod.POST)
 	public ModelAndView validarTarjeta(@Valid @ModelAttribute("tarjetaCredito")TarjetaCredito tarjetaCredito,  BindingResult  result, @RequestParam(value="idCarro")String  idCarro, HttpSession session)throws Exception{
 
-		carro_b=carro_BService.findByCarro_BIdCarro_b(idCarro);
+		//carro_b=carro_BService.findByCarro_BIdCarro_b(idCarro);
+		Carro_B carro= new Carro_B();
+		//BUSCAMOS EL CARRO
+		// ----Preparamos acceptable media type----
+		List<MediaType> acceptableMediaTypes4 = new ArrayList<MediaType>();
+		acceptableMediaTypes4.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers4 = new HttpHeaders();
+		headers4.setAccept(acceptableMediaTypes4);
+		HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(headers4);
+
+		//enviamos el resquest como GET
+		ResponseEntity<Carro_B> carroDevuelto=null;
+		try {
+			 carroDevuelto = 
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b/{id}",
+							HttpMethod.GET, entity4, Carro_B.class,idCarro);
+	
+			
+			 carro=carroDevuelto.getBody();		
+			} catch (Exception e) {
+					logger.error(e);
+		}
+		
+		
 		
 		if(result.hasErrors()) {
 			logger.info("validarTarjeta:---tiene errores----"+result.toString());
@@ -52,12 +87,27 @@ public class tarjetaController {
 				mav.addObject("carro", carro_b);
 				return mav;
 			}
-		carro_b.setPagado(true);
-		carro_BService.update(carro_b);
+		// ----Preparamos acceptable media type----
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
 		
-		String content="apreciado usuario le informamos que el pago de su pedido numero "+idCarro+" se ha realizado con exito, en breve le informaremos al realziar el envio";
-		String subject="pedido: "+idCarro;		
-		mail.sendMail( carro_b.getCliente_b().getLogin_usuario_b(), content, carro_b.getCliente_b().getEmail_b(), subject);
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes4);
+		HttpEntity<Carro_B> entity = new HttpEntity<Carro_B>(carro,headers);
+
+		//enviamos el resquest como PUT
+		
+		try {
+			
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/pagarCarro/",
+							HttpMethod.PUT, entity, Carro_B.class);
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+		}
 		
 		
 		session.removeAttribute("carro_b");

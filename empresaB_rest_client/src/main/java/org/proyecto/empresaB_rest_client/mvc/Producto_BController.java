@@ -6,10 +6,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
@@ -39,12 +43,16 @@ import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.bo.Producto_BBo;
 import org.proyecto.empresaB_rest_client.bo.impl.Producto_BBoImpl;
 import org.proyecto.empresaB_rest_client.exception.GenericException;
+import org.proyecto.empresaB_rest_client.model.Carro_B;
 import org.proyecto.empresaB_rest_client.model.Cliente_B;
 import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
 import org.proyecto.empresaB_rest_client.model.ListaProductos_B;
+import org.proyecto.empresaB_rest_client.model.ListaProductos_BSeleccionados;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
+import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
 import org.proyecto.empresaB_rest_client.service.Productos_BService;
 import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
+import org.proyecto.empresaB_rest_client.util.ListaProductosSeleccionados;
 
 
 
@@ -76,11 +84,99 @@ public class Producto_BController {
 	
 	//pedimo al servidor el listado de todos los productos
 	@RequestMapping(value="/listado",method=RequestMethod.GET)
-	public ModelAndView listadoProductos_B(){
+	public ModelAndView listadoProductos_B(HttpSession session){
 		
+		//si hay session indicamos en la lista de productos los seleccionados
+		if (session.getAttribute("carro_b")!=null){
+			Carro_B carro_b =new Carro_B();
+			carro_b=(Carro_B)session.getAttribute("carro_b");
 		
-		
-		
+		//para poder indicar la cantidad seleccionada de cada uno en la vista
+			  //obtenemos la lista de los productos seleccionados hasta ahora
+			//para poder indicar la cantidad seleccionada de cada uno en la vista
+					// Preparamos acceptable media type
+					List<MediaType> acceptableMediaTypes3 = new ArrayList<MediaType>();
+					acceptableMediaTypes3.add(MediaType.APPLICATION_XML);
+					//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+					
+					// preparamos el header
+					HttpHeaders headers3 = new HttpHeaders();
+					headers3.setAccept(acceptableMediaTypes3);
+					HttpEntity<ListaProductos_BSeleccionados> entity3 = new HttpEntity<ListaProductos_BSeleccionados>(headers3);
+					
+					// enviamos el request como GET
+					
+					ResponseEntity<ListaProductos_BSeleccionados> result3=null;
+					try {
+						//realizamos consulta a servidor para que nos envie todos los productos del carro
+						
+					 result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionadoIdCarro/{idCarro}", 
+							 HttpMethod.GET, entity3, ListaProductos_BSeleccionados.class,String.valueOf( carro_b.getIdcarro_b()));
+					
+						
+						
+								
+						} catch (Exception e) {
+								logger.error(e);
+						}
+					List<Producto_BSeleccionado> listaProductosRecibida = null;
+					listaProductosRecibida = result3.getBody().getDataProductoBSeleccionado();
+					//logger.info("ACABAMOS DE OBTENER LA LISTA DE LOS PRODUCTOS SELECCIONADOS HASTA AHORA (DEL CARRO):::::::: tamaño "+listaProductosRecibida.size());
+					
+					//List<Producto_BSeleccionado> listaProductosRecibida=producto_BSeleccionadoService.findByProducto_BSeleccionadoPorIdcarro_b(String.valueOf( carro_b.getIdcarro_b()));
+			
+					
+			Set<ListaProductosSeleccionados> listaProductos=new HashSet<ListaProductosSeleccionados>(0);
+			Iterator<Producto_BSeleccionado> itr =listaProductosRecibida.iterator();
+			while (itr.hasNext()) {
+				Producto_BSeleccionado element = itr.next();
+				ListaProductosSeleccionados lista = new ListaProductosSeleccionados();
+				lista.setCantidad(element.getCantidad());
+				lista.setIdCarro(element.getCarro_b().getIdcarro_b());
+				lista.setIdproducto_b(element.getProducto_b().getIdproductob());
+				lista.setIdProductoSeleccionado(element.getIdproductoSeleccionado());
+				lista.setNombreProducto(element.getProducto_b().getNombre_productoB());
+				lista.setPrecio_b(element.getProducto_b().getPrecio_b());
+				lista.setSubTotal(element.getSubTotal());
+				listaProductos.add(lista);
+				
+			}
+			//obtenemos la lista de productos para enviarla a la vista
+			// Preparamos acceptable media type
+			List<MediaType> acceptableMediaTypes5 = new ArrayList<MediaType>();
+			acceptableMediaTypes5.add(MediaType.APPLICATION_XML);
+			//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+			
+			// preparamos el header
+			HttpHeaders headers5 = new HttpHeaders();
+			headers5.setAccept(acceptableMediaTypes5);
+			HttpEntity<ListaProductos_B> entity5 = new HttpEntity<ListaProductos_B>(headers5);
+			
+			// enviamos el request como GET
+			
+			ResponseEntity<ListaProductos_B> result5=null;
+			try {
+				//realizamos consulta a servidor para que nos envie todos los productos
+			 result5 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity5, ListaProductos_B.class);
+			
+				
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+				}
+			
+			List<Producto_B> lista = result5.getBody().getDataProducto();		
+			//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
+			
+			
+			
+			ModelAndView mav= new ModelAndView("producto_b/listaProductos");
+			mav.addObject("productos", lista);
+			//añadimos la lista de los seleccionados hasta ahora
+			mav.addObject("productosSeleccionados",listaProductos);
+			return mav;
+	}else{
 		// Preparamos acceptable media type
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
 		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
@@ -103,8 +199,10 @@ public class Producto_BController {
 			} catch (Exception e) {
 					logger.error(e);
 			}
-
 		return mav;
+		
+	}
+		
 	}
 		
 

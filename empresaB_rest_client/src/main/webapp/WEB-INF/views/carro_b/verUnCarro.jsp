@@ -38,7 +38,7 @@ h4 {color:#B40431;}
 
 <c:if  test="${!empty productosSeleccionados}">
 
-
+<c:set var="total" value="${0}" scope="page" />
 <c:set var="fila" value="${0}" scope="page" />
 
 
@@ -48,6 +48,8 @@ h4 {color:#B40431;}
 	<th>IMAGEN</th>
     <th>CODIGO PRODUCTO</th>
     <th>CANTIDAD PEDIDA</th>
+     <th>PRECIO</th>
+     <th>SUBTOTAL</th>
     <sec:authorize access="hasRole('ROLE_ADMIN')">   
     <th>ELIMINAR</th>
     </sec:authorize>
@@ -84,8 +86,16 @@ h4 {color:#B40431;}
                 ${productosSeleccionados.cantidad}
         </td>
         
+         <td>
+                 ${productosSeleccionados.precio_b}
+         
+         </td>
 
-
+                
+       <td>
+                ${productosSeleccionados.subTotal}
+                 <c:set var="total" value="${total+ productosSeleccionados.subTotal}" scope="page" />
+        </td>
         
         <sec:authorize access="hasRole('ROLE_CLIENTE')">
 
@@ -106,6 +116,7 @@ h4 {color:#B40431;}
     </tr>
 </c:forEach>
 </table>
+ <h4>total a pagar:  <c:out value="${total}" /></h4>
 </c:if>
 <c:if  test="${empty productosSeleccionados}">
 		<h4>el carro esta vacio</h4>	

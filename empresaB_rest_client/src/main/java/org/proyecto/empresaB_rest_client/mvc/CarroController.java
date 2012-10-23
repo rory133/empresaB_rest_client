@@ -604,7 +604,7 @@ public class CarroController {
 					}
 				List<Producto_BSeleccionado> listaProductosRecibida = null;
 				listaProductosRecibida = result3.getBody().getDataProductoBSeleccionado();
-				logger.info("ACABAMOS DE OBTENER LA LISTA DE LOS PRODUCTOS SELECCIONADOS HASTA AHORA (DEL CARRO):::::::: tamaño "+listaProductosRecibida.size());
+			//	logger.info("ACABAMOS DE OBTENER LA LISTA DE LOS PRODUCTOS SELECCIONADOS HASTA AHORA (DEL CARRO):::::::: tamaño "+listaProductosRecibida.size());
 				
 				//List<Producto_BSeleccionado> listaProductosRecibida=producto_BSeleccionadoService.findByProducto_BSeleccionadoPorIdcarro_b(String.valueOf( carro_b.getIdcarro_b()));
 		
@@ -639,7 +639,7 @@ public class CarroController {
 		
 		ResponseEntity<ListaProductos_B> result5=null;
 		try {
-			//realizamos consulta a servidor para que nos envie todos los clientes
+			//realizamos consulta a servidor para que nos envie todos los productos
 		 result5 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity5, ListaProductos_B.class);
 		
 			
@@ -1311,9 +1311,9 @@ public class CarroController {
 		
 		List<Producto_BSeleccionado> listaProductosRecibida = result3.getBody().getDataProductoBSeleccionado();
 		//List<Producto_BSeleccionado> listaProductosRecibida=producto_BSeleccionadoService.findByProducto_BSeleccionadoPorIdcarro_b(idCarro);
-		if (!listaProductosRecibida.isEmpty()){
+	//	if (!listaProductosRecibida.isEmpty()){
 		//logger.info("tamaño lista productosSeleccionados en esteCarro"+listaProductosRecibida.size());
-		
+		if (null!=listaProductosRecibida){
 		Iterator<Producto_BSeleccionado> itr =listaProductosRecibida.iterator();
 		while (itr.hasNext()) {
 			Producto_BSeleccionado element = itr.next();
@@ -1565,14 +1565,14 @@ public class CarroController {
 				// preparamos el header
 				HttpHeaders headers4 = new HttpHeaders();
 				headers4.setAccept(acceptableMediaTypes4);
-				HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(carro_b,headers4);
+				HttpEntity<Carro_B> entity4 = new HttpEntity<Carro_B>(headers4);
 
 				//enviamos el resquest como GET
 				ResponseEntity<Carro_B> carroDevuelto=null;
 				try {
 					 carroDevuelto = 
 							restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b/{id}",
-									HttpMethod.GET, entity4, Carro_B.class);
+									HttpMethod.GET, entity4, Carro_B.class,idCarro);
 			
 					
 							
@@ -1587,8 +1587,7 @@ public class CarroController {
 
 		ModelAndView mav= new ModelAndView("carro_b/datosTarjeta");
 		mav.addObject("tarjetaCredito", tarjetaCredito);
-		mav.addObject("idCarro", carro_b);
-		mav.addObject("total", total);
+		mav.addObject("Carro", carro_b);
 		return mav;
 	}
 }

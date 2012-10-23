@@ -57,8 +57,8 @@ h4 {color:#B40431;}
 				</td>
 		</tr>
 		
-		<td><form:hidden path="idCarro" id="idCarro" value="${idCarro.idcarro_b}"/></td>
-		<td><h4>total a pagar: ${total}</h4></td>
+		<td><form:hidden path="idCarro" id="idCarro" value="${Carro.idcarro_b}"/></td>
+		<td><h4>total a pagar: ${Carro.total}</h4></td>
 		<td><input name="tarjetaCredito" type="submit" value="realizar pago" /></td>
 
 
