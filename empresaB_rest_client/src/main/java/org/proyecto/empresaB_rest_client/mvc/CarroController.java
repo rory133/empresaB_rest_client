@@ -856,14 +856,14 @@ public class CarroController {
 		// preparamos el header
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(acceptableMediaTypes);
-		HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(headers);
+		HttpEntity<Producto_BSeleccionado> entity = new HttpEntity<Producto_BSeleccionado>(headers);
 
 
 		try {
 			
 			// result=
 			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionado/{id}",
-							HttpMethod.DELETE, entity, Producto_B.class,idProducto,String.valueOf(producto_BSeleccionado.getIdproductoSeleccionado()));
+							HttpMethod.DELETE, entity, Producto_BSeleccionado.class,idProducto,String.valueOf(producto_BSeleccionado.getIdproductoSeleccionado()));
 					
 	
 			
@@ -973,6 +973,186 @@ public class CarroController {
 		//devolvemos vista a verCarroActual
 		return new ModelAndView("redirect: verCarro");
 	}
+	
+	
+	
+	@RequestMapping(value="/eliminarProductoCarroActual", method = RequestMethod.GET)
+	public ModelAndView eliminarProductoCarroActual(@RequestParam(value="idProductoSeleccionado")String  idProductoSeleccionado,@RequestParam(value="idProducto")String  idProducto, @RequestParam(value="cantidad")String cantidad, HttpSession session) throws Exception{
+		logger.info("en /eliminarProductoCarroActual en CLIENTE @@@@@@@@@@");
+		
+	
+		
+		
+		carro_b=(Carro_B)session.getAttribute("carro_b");
+		//eliminar el producto
+		Producto_BSeleccionado producto_BSeleccionado=new Producto_BSeleccionado();
+		
+		//lo buscamos por el id del producto y del carro
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes2 = new ArrayList<MediaType>();
+		acceptableMediaTypes2.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers2 = new HttpHeaders();
+		headers2.setAccept(acceptableMediaTypes2);
+		HttpEntity<Producto_BSeleccionado> entity2 = new HttpEntity<Producto_BSeleccionado>(headers2);
+
+		//enviamos el resquest como POST
+		ResponseEntity<Producto_BSeleccionado> result2=null;
+		
+		try {
+			
+			 result2=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionadoIDProductoIdCarro/{id}/{idCarro}",
+						//	HttpMethod.GET, entity2, Producto_BSeleccionado.class,idProducto,String.valueOf( carro_b.getIdcarro_b()));
+					HttpMethod.GET, entity2, Producto_BSeleccionado.class,idProducto,carro_b.getIdcarro_b());
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			} 
+		
+		producto_BSeleccionado=result2.getBody();
+		//producto_BSeleccionado=producto_BSeleccionadoService.findByProducto_BSeleccionadoIdProducto_b_y_carro_b(idProducto, String.valueOf(carro_b.getIdcarro_b()));
+		
+		
+		logger.info("en /eliminarProductoCarroActual en CLIENTE @@@@@@@@@@ valor del total ANTES de reducir lo que habia pedido"+carro_b.getTotal());
+		//reducimos el total del carro el valor del producto seleccionado
+		carro_b.setTotal(carro_b.getTotal().subtract(producto_BSeleccionado.getSubTotal()));
+		logger.info("en /eliminarProductoCarroActual en CLIENTE @@@@@@@@@@ valor del total DESPUES de reducir lo que habia pedido"+carro_b.getTotal());
+		
+		
+
+
+		//eliminamos el productoSeleccionado
+		// Preparamos acceptable media type
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(acceptableMediaTypes);
+		HttpEntity<Producto_B> entity = new HttpEntity<Producto_B>(headers);
+
+
+		try {
+			
+			// result=
+			restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productoBSeleccionado/producto_b_seleccionado/{id}",
+							HttpMethod.DELETE, entity, Producto_BSeleccionado.class,String.valueOf(producto_BSeleccionado.getIdproductoSeleccionado()));
+					
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+			} 
+		 	//producto_BSeleccionadoService.delete(producto_BSeleccionado);
+		
+		//sumamos cantidad que tenia el producto seleccionado a la cantidad de existencias del producto
+		
+		
+		Producto_B producto=new Producto_B();
+		//encontramos el producto
+		
+		//obtenemos el producto correspondiente a ese id
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes3 = new ArrayList<MediaType>();
+				acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+				
+				// preparamos el header
+				HttpHeaders headers3 = new HttpHeaders();
+				headers3.setAccept(acceptableMediaTypes3);
+				HttpEntity<Producto_B> entity3 = new HttpEntity<Producto_B>(headers3);
+
+				//enviamos el resquest como POST
+				ResponseEntity<Producto_B> result3=null;
+				
+				try {
+					
+					 result3=
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/producto/{id}",
+									HttpMethod.GET, entity3, Producto_B.class,idProducto);
+			
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					}
+		
+		
+				producto=result3.getBody();		
+				//producto=productos_BServiceImpl.findByProducto_BIdProducto_b(idProducto);
+				
+				
+		
+		//actualizamos cantidad
+		producto.setCantidad_existencias(producto.getCantidad_existencias()+Integer.parseInt(cantidad));
+		
+		//Actualizamos producto
+		// ----Preparamos acceptable media type----
+		List<MediaType> acceptableMediaTypes4 = new ArrayList<MediaType>();
+		acceptableMediaTypes4.add(MediaType.APPLICATION_XML);
+		
+		// preparamos el header
+		HttpHeaders headers4 = new HttpHeaders();
+		headers4.setAccept(acceptableMediaTypes4);
+		HttpEntity<Producto_B> entity4 = new HttpEntity<Producto_B>(producto,headers4);
+
+		//enviamos el resquest como PUT
+		
+		try {
+			 
+					restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos/admin/producto",
+							HttpMethod.PUT, entity4, Producto_B.class);
+	
+			
+					
+			} catch (Exception e) {
+					logger.error(e);
+		}
+		
+		//productos_BServiceImpl.update(producto);
+		
+		//Actualizamos el carro
+		
+				// ----Preparamos acceptable media type----
+						List<MediaType> acceptableMediaTypes6 = new ArrayList<MediaType>();
+						acceptableMediaTypes6.add(MediaType.APPLICATION_XML);
+						
+						// preparamos el header
+						HttpHeaders headers6 = new HttpHeaders();
+						headers6.setAccept(acceptableMediaTypes6);
+						HttpEntity<Carro_B> entity6 = new HttpEntity<Carro_B>(carro_b,headers6);
+
+						//enviamos el resquest como PUT
+						
+						try {
+							//ResponseEntity<Cliente_B> clienteDevuelto = 
+									restTemplate.exchange("http://localhost:8080/empresaB_rest_server/carro/carro_b",
+											HttpMethod.PUT, entity6, Carro_B.class);
+					
+							
+									
+							} catch (Exception e) {
+									logger.error(e);
+						}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//devolvemos vista a verCarroActual
+		return new ModelAndView("redirect: verCarro");
+	}
+	
+	
+	
+	
 	
 	@RequestMapping(value="/verTodosLosPedidos", method = RequestMethod.GET)
 	public ModelAndView verTodosLosPedidos( HttpSession session) throws Exception{
