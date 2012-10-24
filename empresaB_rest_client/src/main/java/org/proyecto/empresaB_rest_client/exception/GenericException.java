@@ -2,6 +2,10 @@ package org.proyecto.empresaB_rest_client.exception;
 
 public class GenericException extends RuntimeException{
 	 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String customMsg;
  
 	
@@ -18,4 +22,5 @@ public class GenericException extends RuntimeException{
 		this.customMsg = customMsg;
 	}
  
+
 }

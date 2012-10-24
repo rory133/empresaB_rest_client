@@ -14,10 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.model.Cliente_B;
 import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
-import org.proyecto.empresaB_rest_client.model.Producto_B;
+import org.proyecto.empresaB_rest_client.model.ListaProductos_B;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
-
-import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,8 +40,7 @@ public class ClienteController {
 	
 
 	
-	@Autowired
-	private Productos_BServiceImpl productos_BServiceImpl;
+
 	
 	
 	@Autowired
@@ -159,8 +156,33 @@ public class ClienteController {
 		
 		
 		//devolvemos pagina inicial
+		// Preparamos acceptable media type
+				List<MediaType> acceptableMediaTypes3 = new ArrayList<MediaType>();
+				acceptableMediaTypes3.add(MediaType.APPLICATION_XML);
+				//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+				
+				// preparamos el header
+				HttpHeaders headers3 = new HttpHeaders();
+				headers3.setAccept(acceptableMediaTypes3);
+				HttpEntity<ListaProductos_B> entity3 = new HttpEntity<ListaProductos_B>(headers3);
+				
+				// enviamos el request como GET
+				ModelAndView mav=new ModelAndView("producto_b/listaProductos");
+				try {
+					//realizamos consulta a servidor para que nos envie todos los clientes
+					ResponseEntity<ListaProductos_B> result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity3, ListaProductos_B.class);
+				
+					mav.addObject("productos", result3.getBody().getDataProducto());
+					
+							
+					} catch (Exception e) {
+							logger.error(e);
+					}
+		return mav;
+		
+/*		
 		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		return new ModelAndView("producto_b/listaProductos","productos", lista);
+		return new ModelAndView("producto_b/listaProductos","productos", lista);*/
 		
 }
 	

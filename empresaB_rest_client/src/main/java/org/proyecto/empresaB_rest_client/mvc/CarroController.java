@@ -19,8 +19,6 @@ import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
 import org.proyecto.empresaB_rest_client.model.TarjetaCredito;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
-import org.proyecto.empresaB_rest_client.service.impl.Carro_BServiceImpl;
-import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
 import org.proyecto.empresaB_rest_client.util.ListaPedidos;
 import org.proyecto.empresaB_rest_client.util.ListaProductosSeleccionados;
 import org.proyecto.empresaB_rest_client.util.Mail;
@@ -51,14 +49,13 @@ public class CarroController {
 	@Autowired
 	private Carro_B carro_b;
 	
-	@Autowired
-	private Productos_BServiceImpl productos_BServiceImpl;
+
 	
 	//@Autowired
 	//private Cliente_BServiceImpl cliente_BServiceImpl;
 	
-	@Autowired
-	Carro_BServiceImpl carro_BService;
+
+
 	
 	@Autowired
 	private TarjetaCredito tarjetaCredito;
@@ -676,11 +673,55 @@ public class CarroController {
 		logger.info("en /verCarro en CLIENTE @@@@@@@@@@ id Carro "+String.valueOf( carro_b.getIdcarro_b()));
 		//Si aun no hay ningun carro se envia un mensaje en la vista
 		if (session.getAttribute("carro_b")==null){
+			
+			
 			logger.info("en ver Carro, e carro esta vacio");
 			ModelAndView mav= new ModelAndView("producto_b/listaProductos");
-			List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
+			
+			
+			// Preparamos acceptable media type
+			List<MediaType> acceptableMediaTypes3 = new ArrayList<MediaType>();
+			acceptableMediaTypes3.add(MediaType.APPLICATION_XML);
+			//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+			
+			// preparamos el header
+			HttpHeaders headers3 = new HttpHeaders();
+			headers3.setAccept(acceptableMediaTypes3);
+			HttpEntity<ListaProductos_B> entity3 = new HttpEntity<ListaProductos_B>(headers3);
+			
+			// enviamos el request como GET
+			//ModelAndView mav=new ModelAndView("producto_b/listaProductos");
+			try {
+				//realizamos consulta a servidor para que nos envie todos los clientes
+				ResponseEntity<ListaProductos_B> result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity3, ListaProductos_B.class);
+			
+				mav.addObject("lista", result3.getBody().getDataProducto());
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+				}
+	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
+			
+			
+			
+			
 			mav.addObject("errorCarroVacio","¡¡¡el carro esta vacio, aun no ha seleccionado ningun producto!!!");
-			mav.addObject("productos", lista);		
+			//mav.addObject("productos", lista);		
 			return mav;
 
 		}

@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.model.Carro_B;
 import org.proyecto.empresaB_rest_client.model.TarjetaCredito;
-import org.proyecto.empresaB_rest_client.service.impl.Carro_BServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,8 +33,7 @@ public class tarjetaController {
 	@Autowired
 	private Carro_B carro_b;
 	
-	@Autowired
-	Carro_BServiceImpl carro_BService;
+
 	
 
 	

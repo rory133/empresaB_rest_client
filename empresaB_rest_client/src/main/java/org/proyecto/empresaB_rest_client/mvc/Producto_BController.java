@@ -105,7 +105,9 @@ public class Producto_BController {
 					//logger.info("ACABAMOS DE OBTENER LA LISTA DE LOS PRODUCTOS SELECCIONADOS HASTA AHORA (DEL CARRO):::::::: tamaño "+listaProductosRecibida.size());
 					
 					//List<Producto_BSeleccionado> listaProductosRecibida=producto_BSeleccionadoService.findByProducto_BSeleccionadoPorIdcarro_b(String.valueOf( carro_b.getIdcarro_b()));
-			
+    
+		//para que no de problemas cuando tenemos un carro pero lo hemos vaciado			
+		if(null!=listaProductosRecibida){			
 					
 			Set<ListaProductosSeleccionados> listaProductos=new HashSet<ListaProductosSeleccionados>(0);
 			Iterator<Producto_BSeleccionado> itr =listaProductosRecibida.iterator();
@@ -157,6 +159,34 @@ public class Producto_BController {
 			//añadimos la lista de los seleccionados hasta ahora
 			mav.addObject("productosSeleccionados",listaProductos);
 			return mav;
+			
+		}else{
+			// Preparamos acceptable media type
+			List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+			acceptableMediaTypes.add(MediaType.APPLICATION_XML);
+			//acceptableMediaTypes.add(MediaType.APPLICATION_JSON);
+			
+			// preparamos el header
+			HttpHeaders headers = new HttpHeaders();
+			headers.setAccept(acceptableMediaTypes);
+			HttpEntity<ListaProductos_B> entity = new HttpEntity<ListaProductos_B>(headers);
+			
+			// enviamos el request como GET
+			ModelAndView mav=new ModelAndView("producto_b/listaProductos");
+			try {
+				//realizamos consulta a servidor para que nos envie todos los clientes
+				ResponseEntity<ListaProductos_B> result = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity, ListaProductos_B.class);
+			
+				mav.addObject("productos", result.getBody().getDataProducto());
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+				}
+			return mav;
+			
+		}
+			
 	}else{
 		// Preparamos acceptable media type
 		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();

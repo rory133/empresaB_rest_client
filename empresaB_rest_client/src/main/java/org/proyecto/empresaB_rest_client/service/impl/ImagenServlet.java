@@ -1,7 +1,4 @@
 package org.proyecto.empresaB_rest_client.service.impl;
-
-
-
 	import java.io.BufferedInputStream;
 	import java.io.BufferedOutputStream;
 	import java.io.Closeable;
@@ -19,11 +16,15 @@ package org.proyecto.empresaB_rest_client.service.impl;
 	proporciona una imagen desde un path absoluto
 	 */
 	public class ImagenServlet extends HttpServlet {
-		private static final long serialVersionUID = -5527566244002295682L;
 
 	    // Constants ----------------------------------------------------------------------------------
 
-	    private static final int DEFAULT_BUFFER_SIZE = 204800; // 200KB.
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private static final int DEFAULT_BUFFER_SIZE = 204800; // 200KB.
 
 	    // Properties ---------------------------------------------------------------------------------
 
@@ -116,3 +117,4 @@ package org.proyecto.empresaB_rest_client.service.impl;
 	    }
 
 	}
+
