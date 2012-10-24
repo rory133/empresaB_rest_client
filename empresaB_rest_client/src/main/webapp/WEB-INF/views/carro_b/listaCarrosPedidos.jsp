@@ -114,7 +114,15 @@ window.open(URL,"miventana","width=900,height=400,menubar=no");
      	<td>  
      			 <input  type="submit" name="verDetalles" value="verDetalles" onClick="javascript:abrirVentana('verDetallesCarro?idCarro=${carro.idCarro}')" >
    		</td>
-     
+     	
+     	
+     	<sec:authorize access="hasRole('ROLE_ADMIN')">
+        <td>
+        <c:url var="editUrl" value="/carro/borrarCarro" />
+			<a href="${editUrl}?&idCarro=${carro.idCarro}"    onclick="return confirm('¿Quieres borrar este pedido?')" onmouseover="window.status = 'Pulse para eliminar el pedido'; return true" onmouseout="window.status=''"> <span title='Pulse para eliminar el Pedido'> <img border=0 src="../resources/imagenes/borrar.jpg" height=34 width=25> </a>
+		
+        </td>
+		</sec:authorize>
      
        </c:forEach>
 </table>

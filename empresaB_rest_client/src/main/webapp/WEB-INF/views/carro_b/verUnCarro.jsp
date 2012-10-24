@@ -50,9 +50,7 @@ h4 {color:#B40431;}
     <th>CANTIDAD PEDIDA</th>
      <th>PRECIO</th>
      <th>SUBTOTAL</th>
-    <sec:authorize access="hasRole('ROLE_ADMIN')">   
-    <th>ELIMINAR</th>
-    </sec:authorize>
+
   
 </tr>
 
@@ -97,17 +95,7 @@ h4 {color:#B40431;}
                  <c:set var="total" value="${total+ productosSeleccionados.subTotal}" scope="page" />
         </td>
         
-        <sec:authorize access="hasRole('ROLE_CLIENTE')">
 
-       </sec:authorize> 
-        
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
-        <td>
-        <c:url var="editUrl" value="/carro/eliminarProductoCarro" />
-			<a href="${editUrl}?idProductoSeleccionado=${productosSeleccionados.idProductoSeleccionado}&idProducto=${productosSeleccionados.idproducto_b}&cantidad=${productosSeleccionados.cantidad}&idCarro=${idCarro}"    onclick="return confirm('¿Quieres borrar este producto?')" onmouseover="window.status = 'Pulse para eliminar el Producto del carro'; return true" onmouseout="window.status=''"> <span title='Pulse para eliminar el Producto del carro'> <img border=0 src="../resources/imagenes/borrar.jpg" height=34 width=25> </a>
-		
-        </td>
-		</sec:authorize>
 		
 		
 
@@ -115,11 +103,17 @@ h4 {color:#B40431;}
 	<c:set var="fila" value="${fila+1}" scope="page" />
     </tr>
 </c:forEach>
+        <sec:authorize access="hasRole('ROLE_CLIENTE')">
+
+       </sec:authorize> 
+        
+
 </table>
  <h4>total a pagar:  <c:out value="${total}" /></h4>
 </c:if>
 <c:if  test="${empty productosSeleccionados}">
 		<h4>el carro esta vacio</h4>	
+
 </c:if>
 
 </body>
