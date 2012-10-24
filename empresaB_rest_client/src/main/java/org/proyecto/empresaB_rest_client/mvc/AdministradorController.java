@@ -46,8 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/administradores")
 public class AdministradorController {
 	
-	@Autowired
-	private Administrador_BServiceImpl administrador_BServiceImpl;
+
 	
 	
 	@Autowired
@@ -112,28 +111,7 @@ public class AdministradorController {
 	
 	
 	
-/*	
-	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView addAdministrador_B_form(@Valid @ModelAttribute("administrador_b")Administrador_B administrador_b, BindingResult  result)throws Exception {
 
-		
-		logger.info("inicio de addAdministrador_B_form");
-		if(result.hasErrors()) {
-		logger.info("addAdministrador_B_form ------tiene errores----"+result.toString());
-		logger.info("errores: "+result.toString());
-		 return new ModelAndView("administrador_b/edit", "administrador_b",new Administrador_B()).addAllObjects(result.getModel());
-
-		}
-	
-		logger.info("addAdministrador_B_form ");
-	
-		administrador_b.setAUTHORITY("ROLE_ADMIN");
-		administrador_b.setENABLED(true);
-		administrador_BServiceImpl.save(administrador_b);
-
-		return new ModelAndView("redirect:listado");
-}
-	*/
 	
 	
 	@RequestMapping(value="/listado",method=RequestMethod.GET)
@@ -167,19 +145,7 @@ public class AdministradorController {
 	}
 	
 	
-/*	@RequestMapping(value="/listado",method=RequestMethod.GET)
-	public ModelAndView listadoAdministrador_B(){
-		List<Administrador_B> lista =administrador_BServiceImpl.findAll();
-		logger.info("en listadoProductos_B2*");
-		
-		logger.info("tamaño lista en listado: "+lista.size());
-		
 
-	   return new ModelAndView("administrador_b/listaAdministradores","administradores", lista);
-	}
-	
-	*/
-	
 	
 	
 	@RequestMapping(value="/edit",method=RequestMethod.GET)
@@ -234,24 +200,7 @@ public class AdministradorController {
 		return new ModelAndView("administrador_b/modificar", "administrador_b",administrador_b);
 	
 }
-	
-/*	
-	@RequestMapping(value="/edit",method=RequestMethod.GET)
-	public ModelAndView editAdministrador_B_form(String id){
 
-
-	
-		Administrador_B administrador_b= new Administrador_B();
-		administrador_b= administrador_BServiceImpl.findByAdministrador_BIdAdministrador_b(id);
-					
-		logger.info("producto pasado a edit-modificar: "+administrador_b.getNombre_b());
-		
-		
-		//List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		//return new ModelAndView("producto_b/listaProductos","productos", lista);
-		return new ModelAndView("administrador_b/modificar", "administrador_b",administrador_b);
-	
-}*/
 	
 	
 	@RequestMapping(value="/modificarAdministrador_B", method = RequestMethod.POST)
@@ -361,53 +310,7 @@ public class AdministradorController {
 	
 	
 	
-/*	
-	
-	@RequestMapping(value="/modificarAdministrador_B", method = RequestMethod.POST)
-	public ModelAndView modAdministrador_B_form(@Valid @ModelAttribute("administrador_b")Administrador_B administrador_b, BindingResult  result) throws Exception{
 
-		Usuario_B usuarioBuscado=administrador_BServiceImpl.findByAdministrador_B_login_usuario_b(administrador_b.getLogin_usuario_b());
-		Integer idusuarioBuscado=null;
-		if (null!=usuarioBuscado){
-		idusuarioBuscado=usuarioBuscado.getIdusuarios_b();
-		}
-		Integer idadministrador_b=administrador_b.getIdusuarios_b();
-		
-	
-		//if (null !=usuarioBuscado){
-			
-		if ((null !=usuarioBuscado)&& (idusuarioBuscado==idadministrador_b)){
-			result.addError(new ObjectError("loginInvalido", "Este usuario ya existe"));
-			logger.info("null !=usuarioBuscado"+(null !=usuarioBuscado));
-
-			
-		}
-		
-		
-		logger.info("inicio de modAdministrador_B_form");
-		if(result.hasErrors()) {
-		logger.info("modAdministrador_B_form ------tiene errores----"+result.toString());
-		logger.info("errores: "+result.toString());
-		 return new ModelAndView("administrador_b/edit", "administrador_b",new Administrador_B()).addAllObjects(result.getModel());
-
-		}
-	
-
-
-
-		logger.info("modAdministrador_B_form ");
-		
-		administrador_b.setAUTHORITY("ROLE_ADMIN");
-		administrador_b.setENABLED(true);
-		administrador_BServiceImpl.update(administrador_b);
-
-		return new ModelAndView("redirect:listado");
-		
-	
-	
-	}
-	
-	*/
 	
 	
 	@RequestMapping(value="/borrar",method=RequestMethod.GET)
@@ -449,21 +352,7 @@ public class AdministradorController {
 
 }
 	
-/*	
-	@RequestMapping(value="/borrar",method=RequestMethod.GET)
-	public ModelAndView delAdministrador_B_form(String id){
-		logger.info(" en borrrar administrador ");
-		logger.info("en borrar con ide con id: "+id);
-		Administrador_B administrador_b= new Administrador_B();
-		administrador_b= administrador_BServiceImpl.findByAdministrador_BIdAdministrador_b(id);
-		logger.info(" con administrador : "+administrador_b.getNombre_b());
-		administrador_BServiceImpl.delete(administrador_b);
-		
-		logger.info("borrando administrador : "+administrador_b.getNombre_b());
 
-		return new ModelAndView("redirect:listado");
-
-}*/
 	
 
 }

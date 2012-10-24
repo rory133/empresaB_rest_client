@@ -44,8 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/clientes")
 public class ClienteController {
 	
-	@Autowired
-	private Cliente_BServiceImpl cliente_BServiceImpl;
+
 	
 	@Autowired
 	private Productos_BServiceImpl productos_BServiceImpl;
@@ -54,8 +53,7 @@ public class ClienteController {
 	@Autowired
 	ServletContext context;
 	
-	@Autowired
-	private Mail mail;
+
 	
 	private RestTemplate restTemplate = new RestTemplate();
 
@@ -174,18 +172,7 @@ public class ClienteController {
 	
 	
 	
-	/*
-	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
-	public ModelAndView listadoClientes_B(){
-		List<Cliente_B> lista =cliente_BServiceImpl.findAll();
-		logger.info("en listadoProductos_B2*");
-		
-		logger.info("tamaño lista en listado: "+lista.size());
-		
 
-	   return new ModelAndView("cliente_b/listaClientes","clientes", lista);
-	}
-	*/
 	
 	//---listamos todos los clientes----
 	@RequestMapping(value="/admin/listado",method=RequestMethod.GET)
@@ -434,23 +421,6 @@ public class ClienteController {
 		return new ModelAndView("redirect:listado");
 
 }
-	
-	
-/*	
-	@RequestMapping(value="/admin/borrar",method=RequestMethod.GET)
-	public ModelAndView delCliente_B_form(String id){
-		logger.info(" en borrrar cliente ");
-		logger.info("en borrar con ide con id: "+id);
-		Cliente_B cliente_b= new Cliente_B();
-		cliente_b= cliente_BServiceImpl.findByCliente_BIdCliente_b(id);
-		logger.info(" con cliente : "+cliente_b.getNombre_b());
-		cliente_BServiceImpl.delete(cliente_b);
-		
-		logger.info("borrando cliente : "+cliente_b.getNombre_b());
 
-		return new ModelAndView("redirect:listado");
-
-}
-	*/
 
 }
