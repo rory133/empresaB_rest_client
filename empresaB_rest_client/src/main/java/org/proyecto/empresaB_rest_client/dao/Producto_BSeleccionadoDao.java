@@ -2,7 +2,7 @@ package org.proyecto.empresaB_rest_client.dao;
 
 import java.util.List;
 
-import org.proyecto.empresaB_rest_client.model.Carro_B;
+
 import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
 
 public interface Producto_BSeleccionadoDao {

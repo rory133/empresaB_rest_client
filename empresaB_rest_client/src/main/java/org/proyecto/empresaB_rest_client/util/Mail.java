@@ -1,7 +1,6 @@
 package org.proyecto.empresaB_rest_client.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -14,15 +13,14 @@ public class Mail {
 	@Autowired
 	JavaMailSender mailSender;
 	//private MailSender mailSender;
+	
 	private SimpleMailMessage simpleMailMessage;
 	
 	public void setSimpleMailMessage(SimpleMailMessage simpleMailMessage) {
 		this.simpleMailMessage = simpleMailMessage;
 	}
 
-/*	public void setMailSender(MailSender mailSender) {
-		this.mailSender = mailSender;
-	}*/
+
 	
 	public void sendMail(String dear, String content, String to, String subject) {
 

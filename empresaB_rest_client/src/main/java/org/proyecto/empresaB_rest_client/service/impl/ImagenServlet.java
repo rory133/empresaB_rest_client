@@ -19,6 +19,7 @@ package org.proyecto.empresaB_rest_client.service.impl;
 	proporciona una imagen desde un path absoluto
 	 */
 	public class ImagenServlet extends HttpServlet {
+		private static final long serialVersionUID = -5527566244002295682L;
 
 	    // Constants ----------------------------------------------------------------------------------
 

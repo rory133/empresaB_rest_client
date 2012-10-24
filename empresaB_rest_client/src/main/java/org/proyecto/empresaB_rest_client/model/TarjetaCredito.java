@@ -1,9 +1,6 @@
 package org.proyecto.empresaB_rest_client.model;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.Pattern;
-
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 

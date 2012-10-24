@@ -5,13 +5,9 @@ import java.util.List;
 import org.proyecto.empresaB_rest_client.bo.Producto_BSeleccionadoBo;
 import org.proyecto.empresaB_rest_client.dao.Producto_BSeleccionadoDao;
 import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
-import org.proyecto.empresaB_rest_client.util.CustomHibernateDaoSupport;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
 
 
 

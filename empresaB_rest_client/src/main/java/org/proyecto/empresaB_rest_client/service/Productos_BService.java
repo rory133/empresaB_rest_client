@@ -3,7 +3,7 @@ package org.proyecto.empresaB_rest_client.service;
 import java.util.List;
 
 import org.proyecto.empresaB_rest_client.model.Producto_B;
-import org.springframework.stereotype.Service;
+
 
 
 public interface Productos_BService {

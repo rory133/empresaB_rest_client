@@ -3,13 +3,12 @@ package org.proyecto.empresaB_rest_client.mvc;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+
 import java.util.List;
-import java.util.Map;
+
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
 import org.springframework.web.client.RestTemplate;
 import org.apache.log4j.Logger;
@@ -17,10 +16,8 @@ import org.proyecto.empresaB_rest_client.model.Cliente_B;
 import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
-import org.proyecto.empresaB_rest_client.service.impl.Cliente_BServiceImpl;
+
 import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
-import org.proyecto.empresaB_rest_client.util.ListaProvincias;
-import org.proyecto.empresaB_rest_client.util.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +31,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -213,7 +209,7 @@ public class ClienteController {
 
 		logger.info("id cliente pasado a edit-modificar en Cliente @@@@@@ : "+id);
 		
-		Cliente_B cliente_b= new Cliente_B();
+		
 		
 		//obtenemos el cliente correspondiente a ese id
 		// Preparamos acceptable media type

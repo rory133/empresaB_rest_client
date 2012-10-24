@@ -1,10 +1,9 @@
 package org.proyecto.empresaB_rest_client.mvc;
 
-import java.util.Date;
+
 
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

@@ -1,42 +1,21 @@
 package org.proyecto.empresaB_rest_client.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
 import org.hibernate.validator.constraints.Email;
-import org.springframework.format.annotation.NumberFormat;
-import org.springframework.format.annotation.NumberFormat.Style;
 
 
 
 
-/*@Entity
-@Table(name = "usuario_b")*/
-//@XStreamAlias("usuario-xml")
-//@XmlRootElement(name="usuario_b")
-//@XmlAccessorType(XmlAccessType.FIELD)
-//@JSONConfigurable
 @XmlTransient
 @Entity
 @Table(name = "usuario_b")
@@ -142,7 +121,7 @@ import org.springframework.format.annotation.NumberFormat.Style;
 	public String getNombre_b() {
 		return nombre_b;
 	}
-	//@XmlElement
+
 	public void setNombre_b(String nombre_b) {
 		this.nombre_b = nombre_b;
 	}
@@ -150,7 +129,7 @@ import org.springframework.format.annotation.NumberFormat.Style;
 	public String getApellidos_b() {
 		return apellidos_b;
 	}
-	//@XmlElement
+
 	public void setApellidos_b(String apellidos_b) {
 		this.apellidos_b = apellidos_b;
 	}
@@ -158,7 +137,7 @@ import org.springframework.format.annotation.NumberFormat.Style;
 	public String getEmail_b() {
 		return email_b;
 	}
-	//@XmlElement
+
 	public void setEmail_b(String email_b) {
 		this.email_b = email_b;
 	

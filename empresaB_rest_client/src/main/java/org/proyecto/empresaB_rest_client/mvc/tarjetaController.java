@@ -8,10 +8,8 @@ import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.model.Carro_B;
-import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.model.TarjetaCredito;
 import org.proyecto.empresaB_rest_client.service.impl.Carro_BServiceImpl;
-import org.proyecto.empresaB_rest_client.util.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -76,7 +73,7 @@ public class tarjetaController {
 					logger.error(e);
 		}
 		
-		
+		carro_b=carroDevuelto.getBody();
 		
 		if(result.hasErrors()) {
 			logger.info("validarTarjeta:---tiene errores----"+result.toString());
@@ -84,7 +81,7 @@ public class tarjetaController {
 				ModelAndView mav= new ModelAndView("carro_b/datosTarjeta");
 				mav.addObject("tarjetaCredito", tarjetaCredito);
 				mav.addAllObjects(result.getModel());
-				mav.addObject("carro", carro_b);
+				mav.addObject("Carro", carro_b);
 				return mav;
 			}
 		// ----Preparamos acceptable media type----

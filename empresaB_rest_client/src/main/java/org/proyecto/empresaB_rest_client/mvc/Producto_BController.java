@@ -3,33 +3,21 @@ package org.proyecto.empresaB_rest_client.mvc;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.Validator;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,18 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.proyecto.empresaB_rest_client.bo.Producto_BBo;
-import org.proyecto.empresaB_rest_client.bo.impl.Producto_BBoImpl;
 import org.proyecto.empresaB_rest_client.exception.GenericException;
 import org.proyecto.empresaB_rest_client.model.Carro_B;
-import org.proyecto.empresaB_rest_client.model.Cliente_B;
-import org.proyecto.empresaB_rest_client.model.ListaClientes_B;
 import org.proyecto.empresaB_rest_client.model.ListaProductos_B;
 import org.proyecto.empresaB_rest_client.model.ListaProductos_BSeleccionados;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
-import org.proyecto.empresaB_rest_client.service.Productos_BService;
-import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
 import org.proyecto.empresaB_rest_client.util.ListaProductosSeleccionados;
 
 
@@ -62,8 +44,7 @@ import org.proyecto.empresaB_rest_client.util.ListaProductosSeleccionados;
 @RequestMapping("/productos")
 public class Producto_BController {
 
-	@Autowired
-	private Productos_BServiceImpl productos_BServiceImpl;
+
 	
 
 	
@@ -209,51 +190,6 @@ public class Producto_BController {
 	
 	
 	
-	
-	/*
-	@RequestMapping(value="/listado",method=RequestMethod.GET)
-	public ModelAndView listadoProductos_B(){
-		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		logger.info("en listadoProductos_B2*");
-		
-		logger.info("tamaño lista en listado: "+lista.size());
-		
-
-	   return new ModelAndView("producto_b/listaProductos","productos", lista);
-	}
-	
-	*/
-	
-	
-	
-	
-	
-/*	
-	
-	@RequestMapping(value="/listado2",method=RequestMethod.GET)
-	public ModelAndView listado2Productos_B(){
-		List<Producto_B> lista =productos_BServiceImpl.getProductos_B();
-		logger.info("en listadoProductos_B2*");
-		
-		logger.info("tamaño lista en listado: "+lista.size());
-		
-		ModelAndView mav= new ModelAndView("producto_b/listaProductos");
-		String bienvenida1="Bienvenido a la pagina de empreaB ";
-		String bienvenida2="para realizar compras deberias estar logado ";
-		String bienvenida3="estos son los productos de que disponemos:";
-		mav.addObject("bienvenida1", bienvenida1);
-		mav.addObject("bienvenida2", bienvenida2);
-		mav.addObject("bienvenida3", bienvenida3);
-		mav.addObject("productos", lista);
-		return mav;
-	   //return new ModelAndView("producto_b/listaProductos","productos", lista);
-	}
-	
-	*/
-	
-	
-	
-	
 	//cuando un administrador pide añadir productos le enviamos al formulario
 	@RequestMapping(value="/admin/" ,method = RequestMethod.GET, params="new")
 	public ModelAndView addProducto() {
@@ -261,10 +197,7 @@ public class Producto_BController {
 		return new ModelAndView("producto_b/edit", "producto_b",new Producto_B());
 	  }
 	
-	
-	
 
-	//@RequestMapping(method = RequestMethod.POST)
 	
 	
 	//public ModelAndView modProducto_B_form(@Valid @ModelAttribute("producto_b")Producto_B producto_b,  BindingResult  result,@RequestParam(value="image",required=false)MultipartFile image, HttpServletRequest request){
@@ -277,29 +210,6 @@ public class Producto_BController {
 			return new ModelAndView("producto_b/modificar", "producto_b",producto_b).addAllObjects(result.getModel());
 		}
 
-	/*		CODIGO DE CUANDO NO MOSTRABA Ñss
-		logger.info("modificarProducto_B_form ------NO tiene errores----");
-		logger.info("nombre producto a añadir "+ producto_b.getNombre_productoB());
-		//productos_BServiceImpl.save(producto_b);
-		logger.info("modificarProducto_B_form ");
-		String nombre =producto_b.getNombre_productoB();
-		//String nombre =new String();
-		try {
-		logger.info("el nombre insertado en try antes de cambio: "+nombre);
-		nombre =new String (producto_b.getNombre_productoB().getBytes("ISO-8859-1"),"UTF-8");
-		//nombre =new String (producto_b.getNombre_productoB().getBytes("UTF-8"),"ISO-8859-1");
-		//nombre =new String (nombre1.getBytes("ISO-8859-1"),"UTF-8");
-		
-		logger.info("el nombre insertado en try despue de cambio: "+nombre);
-		} catch(UnsupportedEncodingException uee) {
-		    uee.printStackTrace();
-		}
-		
-		
-		logger.info("el nombre modificado-update fuera try: "+nombre);
-		producto_b.setNombre_productoB(nombre);
-		
-		*/
 		if(image.isEmpty()){
 			logger.info("en SIN IMAGEN ");
 			//Actualizamos producto
@@ -426,9 +336,6 @@ public class Producto_BController {
 }
 	
 	
-	//@RequestMapping(value="/crearProductoB", method = RequestMethod.POST)
-	
-	//public ModelAndView addProducto_B_form(@Valid @ModelAttribute("producto_b")Producto_B producto_b, BindingResult  result,@RequestParam(value="image",required=false)MultipartFile image, HttpServletRequest request){
 	@RequestMapping(value="/admin/crearProductoB",method = RequestMethod.POST)
 	public ModelAndView addProducto_B_form(@Valid @ModelAttribute("producto_b")Producto_B producto_b, BindingResult  result,@RequestParam(value="image",required=false)MultipartFile image) throws Exception{
 
@@ -441,25 +348,6 @@ public class Producto_BController {
 
 		}
 
-		/*				CODIGO DE CUANDO NO MOSTRABA LAS Ñs---
-		logger.info("addProducto_B_form ------NO tiene errores----");
-		logger.info("nombre producto a añadir "+ producto_b.getNombre_productoB());
-		//productos_BServiceImpl.save(producto_b);
-		logger.info("addProducto_B_form ");
-		
-		
-		String nombre =producto_b.getNombre_productoB();
-		try {
-		logger.info("el nombre insertado en try antes de cambio"+nombre);
-		nombre =new String (producto_b.getNombre_productoB().getBytes("ISO-8859-1"),"UTF-8");
-		
-		logger.info("el nombre insertado en try despue de cambio"+nombre);
-		} catch(UnsupportedEncodingException uee) {
-		    uee.printStackTrace();
-		}
-		logger.info("el nombre insertado en add-save fuera try"+nombre);
-		producto_b.setNombre_productoB(nombre);
-		*/
 		
 		if(image.isEmpty()){
 			logger.info("en SIN IMAGEN ");

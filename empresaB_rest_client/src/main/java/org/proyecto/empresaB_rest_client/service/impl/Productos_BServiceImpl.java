@@ -1,20 +1,13 @@
 package org.proyecto.empresaB_rest_client.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.proyecto.empresaB_rest_client.bo.Producto_BBo;
-import org.proyecto.empresaB_rest_client.dao.Producto_BDao;
 import org.proyecto.empresaB_rest_client.model.Producto_B;
 import org.proyecto.empresaB_rest_client.service.Productos_BService;
-import org.proyecto.empresaB_rest_client.util.CustomHibernateDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
+
 
 
 

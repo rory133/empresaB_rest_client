@@ -7,13 +7,9 @@ import org.proyecto.empresaB_rest_client.bo.Administrador_BBo;
 import org.proyecto.empresaB_rest_client.dao.Administrador_BDao;
 import org.proyecto.empresaB_rest_client.model.Administrador_B;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
 
 
 

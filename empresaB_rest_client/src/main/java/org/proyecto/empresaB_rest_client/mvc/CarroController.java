@@ -2,23 +2,13 @@ package org.proyecto.empresaB_rest_client.mvc;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
-
-
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
 import org.apache.log4j.Logger;
 import org.proyecto.empresaB_rest_client.model.Carro_B;
 import org.proyecto.empresaB_rest_client.model.Cliente_B;
@@ -30,8 +20,6 @@ import org.proyecto.empresaB_rest_client.model.Producto_BSeleccionado;
 import org.proyecto.empresaB_rest_client.model.TarjetaCredito;
 import org.proyecto.empresaB_rest_client.model.Usuario_B;
 import org.proyecto.empresaB_rest_client.service.impl.Carro_BServiceImpl;
-import org.proyecto.empresaB_rest_client.service.impl.Cliente_BServiceImpl;
-import org.proyecto.empresaB_rest_client.service.impl.Producto_BSeleccionadoServiceImpl;
 import org.proyecto.empresaB_rest_client.service.impl.Productos_BServiceImpl;
 import org.proyecto.empresaB_rest_client.util.ListaPedidos;
 import org.proyecto.empresaB_rest_client.util.ListaProductosSeleccionados;
@@ -46,8 +34,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,11 +54,8 @@ public class CarroController {
 	@Autowired
 	private Productos_BServiceImpl productos_BServiceImpl;
 	
-	@Autowired
-	private Producto_BSeleccionadoServiceImpl producto_BSeleccionadoService;
-	
-	@Autowired
-	private Cliente_BServiceImpl cliente_BServiceImpl;
+	//@Autowired
+	//private Cliente_BServiceImpl cliente_BServiceImpl;
 	
 	@Autowired
 	Carro_BServiceImpl carro_BService;
@@ -110,7 +93,38 @@ public class CarroController {
 			
 			Usuario_B usuario= new Usuario_B();
 			
-			usuario= cliente_BServiceImpl.findByCliente_B_login_usuario_b(user.getUsername());
+			//usuario= cliente_BServiceImpl.findByCliente_B_login_usuario_b(user.getUsername());
+			
+			//comprobamos que no exista este login
+			// Preparamos acceptable media type
+			List<MediaType> acceptableMediaTypes2 = new ArrayList<MediaType>();
+			acceptableMediaTypes2.add(MediaType.APPLICATION_XML);
+			
+			// preparamos el header
+			HttpHeaders headers2 = new HttpHeaders();
+			headers2.setAccept(acceptableMediaTypes2);
+			HttpEntity<Cliente_B> entity2 = new HttpEntity<Cliente_B>(headers2);
+
+			//enviamos el resquest como POST
+			ResponseEntity<Cliente_B> resultado=null;
+			
+			try {
+				
+				 resultado=
+				restTemplate.exchange("http://localhost:8080/empresaB_rest_server/clientes/clienteLogin/{login}",
+								HttpMethod.GET, entity2, Cliente_B.class,user.getUsername());
+		
+				
+						
+				} catch (Exception e) {
+						logger.error(e);
+				}
+			
+			
+			usuario=resultado.getBody();
+			
+			
+			
 			
 			logger.info("login usuario obtenido:"+usuario.getLogin_usuario_b());
 			
@@ -529,12 +543,6 @@ public class CarroController {
 					} catch (Exception e) {
 							logger.error(e);
 				}
-				
-				logger.info("HEMOS SALVADO PRUDUCTO SELECCIONADO::::::::");
-				//producto_BSeleccionadoService.save(producto_BSeleccionado);
-				//producto_BSeleccionadoService.update(producto_BSeleccionado);
-				
-				
 				logger.info("ACTUALIZAMOS CARRO::::::::");
 				carro_b.getProducto_BSeleccionado().add(producto_BSeleccionado);
 				
@@ -542,11 +550,6 @@ public class CarroController {
 				carro_b.setTotal(carro_b.getTotal().add(producto_BSeleccionado.getSubTotal()));
 		
 		}
-		/*logger.info("ACTUALIZAMOS CARRO::::::::");
-		carro_b.getProducto_BSeleccionado().add(producto_BSeleccionado);*/
-		
-		
-
 		
 		//Actualizamos el carro
 		
