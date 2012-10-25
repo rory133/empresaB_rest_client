@@ -57,20 +57,17 @@
                     default-target-url="${security.default-target-url}" 
                     always-use-default-target="true"
                     authentication-failure-url="${security.authentication-failure-url}" /> -->
-                    
+        
+        
+        
+        <user-service id="usersBase">
+		<user name="admin" password="admin" authorities="ROLE_ADMIN" />
+		<user name="cliente" password="cliente" authorities="ROLE_CLIENTE" />
+	    </user-service>        
 
 	
 
-<!-- 
-     <authentication-manager>
-	  <authentication-provider>
-	    <user-service>
-		<user name="mkyong" password="123456" authorities="ROLE_CLIENTE" />
-	    </user-service>
-	  </authentication-provider>
-	</authentication-manager>
 
- -->
 	<authentication-manager>
 	   <authentication-provider>
  		<jdbc-user-service id="userService" 
@@ -82,8 +79,10 @@
             	select u.login_usuario_b, u.authority FROM usuario_b u 
             	where u.login_usuario_b=? " 
            />
-            
- 		</authentication-provider>
+     	</authentication-provider>
+     	
+     	 <authentication-provider user-service-ref="usersBase"/>
+ 		
 	</authentication-manager>         
  
 </beans:beans>
