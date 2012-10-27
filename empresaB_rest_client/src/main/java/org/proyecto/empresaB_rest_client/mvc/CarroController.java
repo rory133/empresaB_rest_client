@@ -1231,14 +1231,14 @@ public class CarroController {
 					logger.error(e);
 			}
 	
-		List<Carro_B> listaCarros=result3.getBody().getDataCarro();
-		//List<Carro_B> listaCarros =carro_BService.findAll();
-		
+		List<Carro_B> listaCarros=null;
+	if(null!=result3.getBody()){
+		listaCarros=result3.getBody().getDataCarro();
 		
 		
 		//buscamos los datos de cada carro
 		Iterator<Carro_B> iterCarro =listaCarros.iterator();
-		
+
 		
 		
 		while (iterCarro.hasNext()) {
@@ -1308,9 +1308,10 @@ public class CarroController {
 				listaCarrosAMostrar.add(listaCarrosPedidos);
 			}
 			
+		  }
+		}else{
+			listaCarrosAMostrar=null;
 		}
-		
-		
 		ModelAndView mav= new ModelAndView("carro_b/verPedidos");
 		mav.addObject("TodosLosPedidos", listaCarrosAMostrar);
 		return mav;
