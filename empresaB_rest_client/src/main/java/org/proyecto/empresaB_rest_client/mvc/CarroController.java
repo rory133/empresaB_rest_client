@@ -695,7 +695,7 @@ public class CarroController {
 				//realizamos consulta a servidor para que nos envie todos los clientes
 				ResponseEntity<ListaProductos_B> result3 = restTemplate.exchange("http://localhost:8080/empresaB_rest_server/productos", HttpMethod.GET, entity3, ListaProductos_B.class);
 			
-				mav.addObject("lista", result3.getBody().getDataProducto());
+				mav.addObject("productos", result3.getBody().getDataProducto());
 				
 						
 				} catch (Exception e) {
